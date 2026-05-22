@@ -6,7 +6,7 @@ export default function HomePage() {
     <>
       {/* ANNOUNCEMENT */}
       <div className="announce">
-        ✦ Envío gratis en pedidos mayores a ₡80,000 <span>·</span>
+        ✦ Envío gratis en pedidos cancelados contra entrega <span>·</span>
         Garantía oficial en todos los productos <span>·</span>
         <a href="#">Contactar por WhatsApp →</a>
       </div>

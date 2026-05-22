@@ -144,7 +144,6 @@ nav {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-right: 1px solid var(--gray-200);
 }
 .hero-badge {
   display: inline-flex;
@@ -318,38 +317,6 @@ nav {
   border-radius: 3px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-}
-
-/* ── MARQUEE ── */
-.marquee-wrap {
-  border-top: 1px solid var(--gray-200);
-  border-bottom: 1px solid var(--gray-200);
-  overflow: hidden;
-  background: var(--gray-100);
-  padding: 11px 0;
-}
-.marquee-track {
-  display: flex;
-  animation: marquee 22s linear infinite;
-  width: max-content;
-}
-.marquee-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 32px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--gray-600);
-  white-space: nowrap;
-  border-right: 1px solid var(--gray-200);
-}
-.marquee-dot { color: var(--accent); font-size: 18px; line-height: 1; }
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
 }
 
 /* ── SECTION HEADER ── */

@@ -14,7 +14,9 @@ export default function HomePage() {
       {/* NAVBAR */}
       <nav>
         <div className="nav-inner">
-          <Link href="/" className="logo">Tech<em>Avenue</em></Link>
+          <Link href="/" className="logo">
+           <span style={{color:'#F9BE16'}}>Tech</span><em>Avenue</em>
+          </Link>
           <div className="nav-links">
             <Link href="/categoria/gpu" className="active">GPU</Link>
             <Link href="/categoria/cpu">CPU</Link>

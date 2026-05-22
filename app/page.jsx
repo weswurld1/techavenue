@@ -213,8 +213,15 @@ export default function HomePage() {
           <div>
             <div className="footer-col-title">Soporte</div>
             <ul className="footer-links">
-              {['Centro de ayuda','Estado de mi pedido','Política de garantía','Devoluciones','Contacto']
-                .map(l => <li key={l}><a href="#">{l}</a></li>)}
+              {[
+  ['#', 'Centro de ayuda'],
+  ['#', 'Estado de mi pedido'],
+  ['#', 'Política de garantía'],
+  ['/politica-devoluciones', 'Devoluciones'],
+  ['#', 'Contacto'],
+].map(([href, label]) => (
+  <li key={label}><a href={href}>{label}</a></li>
+))}
             </ul>
           </div>
           <div>

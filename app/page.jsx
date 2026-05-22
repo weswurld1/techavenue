@@ -80,24 +80,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* MARQUEE */}
-      <div className="marquee-wrap">
-        <div className="marquee-track">
-          {[
-            'NVIDIA RTX 5000 Series','AMD Ryzen 9000','DDR5 Gaming RAM',
-            'NVMe Gen 5 SSD','Gabinetes ATX & ITX','Cooling AIO 360mm',
-            'Fuentes 80+ Gold','Monitores 144Hz+',
-            'NVIDIA RTX 5000 Series','AMD Ryzen 9000','DDR5 Gaming RAM',
-            'NVMe Gen 5 SSD','Gabinetes ATX & ITX','Cooling AIO 360mm',
-            'Fuentes 80+ Gold','Monitores 144Hz+',
-          ].map((item, i) => (
-            <div className="marquee-item" key={i}>
-              <span className="marquee-dot">·</span> {item}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* CATEGORIES */}
       <section className="categories-section">
         <div className="section-header">

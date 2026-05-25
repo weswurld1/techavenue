@@ -55,19 +55,6 @@ export default function QuienesSomosPage() {
         </div>
       ))}
 
-      <div style={{
-        background: 'var(--gray-100)',
-        border: '1px solid var(--gray-200)',
-        borderLeft: '4px solid #F9BE16',
-        borderRadius: '0 6px 6px 0',
-        padding: '24px 28px',
-        marginBottom: 40,
-      }}>
-        <p style={{ fontSize: 16, fontStyle: 'italic', color: 'var(--gray-800)', lineHeight: 1.7, margin: 0 }}>
-          "Bienvenido a TechAvenue."
-        </p>
-      </div>
-
       <a href="/" style={{
         display: 'inline-flex',
         alignItems: 'center',

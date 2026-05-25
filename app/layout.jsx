@@ -4,6 +4,9 @@ import Navbar from '../components/Navbar'
 export const metadata = {
   title: 'TechAvenue — Componentes y Periféricos PC',
   description: 'Tu tienda de confianza para componentes y periféricos de PC.',
+  icons: {
+    icon: 'favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }) {

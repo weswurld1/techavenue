@@ -184,8 +184,8 @@ export default function HomePage() {
             <ul className="footer-links">
               {[
                 ['/quienes-somos', 'Quiénes somos'],
-                ['#', 'Términos de servicio'],
-                ['#', 'Política de privacidad'],
+                ['/Términos de servicio', 'Términos de servicio'],
+                ['/Política de privacidad', 'Política de privacidad'],
               ].map(([href, label]) => (
                 <li key={label}><Link href={href}>{label}</Link></li>
               ))}
@@ -195,8 +195,8 @@ export default function HomePage() {
         <div className="footer-bottom">
           <span className="footer-copy">© 2026 TechAvenue. Todos los derechos reservados.</span>
           <div className="footer-legal">
-            <a href="#">Privacidad</a>
-            <a href="#">Términos</a>
+            <Link href="/politica-privacidad">Privacidad</Link>
+            <Link href="/terminos-servicio">Términos</Link>
             <a href="#">Cookies</a>
           </div>
         </div>

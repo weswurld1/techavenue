@@ -11,7 +11,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const [form, setForm] = useState({
     nombre: '', apellido: '', provincia: '', canton: '',
-    direccion: '', telefono: '', correo: '', comprobante: '', notas: ''
+    direccion: '', telefono: '', correo: '', notas: ''
   })
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
   const fieldStyle = { marginBottom: 14 }
 
   const handleSubmit = async () => {
-    const requeridos = ['nombre','apellido','provincia','canton','direccion','telefono','correo']
+    const requeridos = ['nombre', 'apellido', 'provincia', 'canton', 'direccion', 'telefono', 'correo']
     for (const campo of requeridos) {
       if (!form[campo].trim()) {
         setError('Por favor completá todos los campos obligatorios.')
@@ -132,14 +132,8 @@ export default function CheckoutPage() {
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#1E3A8A', marginBottom: 4 }}>Transferencia bancaria</div>
-              <div style={{ fontSize: 12, color: '#3730A3' }}>Los datos bancarios se incluirán en la confirmación de tu pedido</div>
+              <div style={{ fontSize: 12, color: '#3730A3' }}>Los datos bancarios se mostrarán al confirmar tu pedido para que puedas realizar la transferencia</div>
             </div>
-          </div>
-
-          <div style={fieldStyle}>
-            <label style={labelStyle}>Número de comprobante de transferencia</label>
-            <input style={inputStyle} value={form.comprobante} onChange={e => set('comprobante', e.target.value)} placeholder="Ej: 202605210001" />
-            <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 5 }}>Podés agregar este número después de realizar la transferencia</div>
           </div>
 
           <div style={fieldStyle}>
@@ -187,7 +181,7 @@ export default function CheckoutPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#16a34a', fontWeight: 600, marginBottom: 14 }}>
               <span>Envío</span>
-              <span>Gratis</span>
+              <span>Gratis 🎉</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid var(--gray-200)', paddingTop: 12 }}>
               <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--black)' }}>Total</span>

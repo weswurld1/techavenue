@@ -223,8 +223,13 @@ export default function HomePage() {
           <div>
             <div className="footer-col-title">Empresa</div>
             <ul className="footer-links">
-              {['Quiénes somos','Términos de servicio','Política de privacidad']
-                .map(l => <li key={l}><a href="#">{l}</a></li>)}
+              {[
+                ['/quienes-somos', 'Quiénes somos'],
+                ['#', 'Términos de servicio'],
+                ['#', 'Política de privacidad'],
+              ].map(([href, label]) => (
+                <li key={label}><Link href={href}>{label}</Link></li>
+              ))}
             </ul>
           </div>
         </div>

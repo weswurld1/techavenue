@@ -1,11 +1,12 @@
 import './globals.css'
+import Navbar from '@/components/Navbar'
 
 export const metadata = {
   title: 'TechAvenue — Componentes y Periféricos PC',
   description: 'Tu tienda de confianza para componentes y periféricos de PC.',
 }
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
       <head>
@@ -15,7 +16,10 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   )
 }

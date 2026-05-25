@@ -1,4 +1,5 @@
 import Slideshow from '@/components/Slideshow'
+import SearchOverlay from '@/components/SearchOverlay'
 import Link from 'next/link'
 
 export default function HomePage() {
@@ -27,11 +28,7 @@ export default function HomePage() {
             <Link href="/categoria/gabinetes">Gabinetes</Link>
           </div>
           <div className="nav-right">
-            <button className="nav-icon-btn" aria-label="Buscar">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-            </button>
+            <SearchOverlay />
             <button className="nav-icon-btn" aria-label="Carrito" style={{position:'relative'}}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
@@ -39,7 +36,6 @@ export default function HomePage() {
               </svg>
               <span className="cart-count">0</span>
             </button>
-            <Link href="/buscar" className="nav-cta">Buscar productos</Link>
           </div>
         </div>
       </nav>
@@ -104,7 +100,6 @@ export default function HomePage() {
           ].map((cat) => (
             <Link href={cat.href} className="category-card" key={cat.href}>
               <div className="category-img-wrap">
-                {/* Cuando tengas la foto, descomenta el img y borra el placeholder */}
                 {/* <img src={cat.img} alt={cat.label} /> */}
                 <div className="category-img-placeholder">foto aquí</div>
               </div>
@@ -176,22 +171,22 @@ export default function HomePage() {
             <Link href="/" className="logo">Tech<em>Avenue</em></Link>
             <p className="footer-desc">Tu tienda de confianza para componentes y periféricos de PC. Stock real, precios directos, garantía oficial.</p>
             <div className="footer-social">
-  <a href="https://instagram.com/techavenue.cr/" target="_blank" rel="noreferrer" className="social-btn" aria-label="Instagram">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9BE16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#F9BE16"/>
-    </svg>
-  </a>
-  <a href="https://facebook.com/profile.php?id=100070614230493" target="_blank" rel="noreferrer" className="social-btn" aria-label="Facebook">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="#1E3A8A" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-    </svg>
-  </a>
-  <a href="https://wa.me/50663409795" target="_blank" rel="noreferrer" className="social-btn" aria-label="WhatsApp">
-    <svg width="16" height="16" viewBox="0 0 32 32" fill="#25D366">
-      <path d="M16 0C7.163 0 0 7.163 0 16c0 2.824.738 5.47 2.031 7.772L0 32l8.469-2.219A15.93 15.93 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.32 22.72c-.347.977-2.025 1.867-2.773 1.936-.748.07-1.469.36-4.96-1.036-4.208-1.666-6.896-5.936-7.104-6.208-.208-.272-1.664-2.213-1.664-4.224 0-2.01 1.053-3.002 1.427-3.413.373-.41.813-.513 1.083-.513.27 0 .54.003.776.014.25.012.585-.095.916.699.347.824 1.179 2.84 1.283 3.047.104.207.174.45.035.726-.139.275-.208.446-.416.687-.207.24-.437.537-.624.721-.208.204-.424.424-.183.833.241.41 1.072 1.765 2.302 2.86 1.582 1.41 2.914 1.848 3.323 2.057.41.208.649.174.89-.104.24-.277.997-1.162 1.264-1.56.267-.4.534-.333.9-.2.366.133 2.338 1.102 2.738 1.302.4.2.665.3.765.467.1.167.1.958-.247 1.91z"/>
-    </svg>
-  </a>
-</div>
+              <a href="https://instagram.com/techavenue.cr/" target="_blank" rel="noreferrer" className="social-btn" aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9BE16" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#F9BE16"/>
+                </svg>
+              </a>
+              <a href="https://facebook.com/profile.php?id=100070614230493" target="_blank" rel="noreferrer" className="social-btn" aria-label="Facebook">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#1E3A8A" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                </svg>
+              </a>
+              <a href="https://wa.me/50663409795" target="_blank" rel="noreferrer" className="social-btn" aria-label="WhatsApp">
+                <svg width="16" height="16" viewBox="0 0 32 32" fill="#25D366">
+                  <path d="M16 0C7.163 0 0 7.163 0 16c0 2.824.738 5.47 2.031 7.772L0 32l8.469-2.219A15.93 15.93 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.32 22.72c-.347.977-2.025 1.867-2.773 1.936-.748.07-1.469.36-4.96-1.036-4.208-1.666-6.896-5.936-7.104-6.208-.208-.272-1.664-2.213-1.664-4.224 0-2.01 1.053-3.002 1.427-3.413.373-.41.813-.513 1.083-.513.27 0 .54.003.776.014.25.012.585-.095.916.699.347.824 1.179 2.84 1.283 3.047.104.207.174.45.035.726-.139.275-.208.446-.416.687-.207.24-.437.537-.624.721-.208.204-.424.424-.183.833.241.41 1.072 1.765 2.302 2.86 1.582 1.41 2.914 1.848 3.323 2.057.41.208.649.174.89-.104.24-.277.997-1.162 1.264-1.56.267-.4.534-.333.9-.2.366.133 2.338 1.102 2.738 1.302.4.2.665.3.765.467.1.167.1.958-.247 1.91z"/>
+                </svg>
+              </a>
+            </div>
           </div>
           <div>
             <div className="footer-col-title">Productos</div>
@@ -210,14 +205,14 @@ export default function HomePage() {
             <div className="footer-col-title">Soporte</div>
             <ul className="footer-links">
               {[
-  ['#', 'Centro de ayuda'],
-  ['#', 'Estado de mi pedido'],
-  ['#', 'Política de garantía'],
-  ['/politica-devoluciones', 'Devoluciones'],
-  ['#', 'Contacto'],
-].map(([href, label]) => (
-  <li key={label}><a href={href}>{label}</a></li>
-))}
+                ['#', 'Centro de ayuda'],
+                ['#', 'Estado de mi pedido'],
+                ['#', 'Política de garantía'],
+                ['/politica-devoluciones', 'Devoluciones'],
+                ['#', 'Contacto'],
+              ].map(([href, label]) => (
+                <li key={label}><Link href={href}>{label}</Link></li>
+              ))}
             </ul>
           </div>
           <div>

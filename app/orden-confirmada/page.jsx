@@ -62,7 +62,7 @@ function ConfirmacionContent() {
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
         
-          href={`https://wa.me/50663409795?text=${encodeURIComponent(mensajeWA)}`}
+          href={`https://wa.me/50663409795?text=' + {encodeURIComponent(mensajeWA)}}
           target="_blank"
           rel="noreferrer"
           style={{ background: '#25D366', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}

@@ -6,7 +6,7 @@ export const metadata = {
   description: 'Tu tienda de confianza para componentes y periféricos de PC.',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <head>

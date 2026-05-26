@@ -62,13 +62,7 @@ function ConfirmacionContent() {
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
         
-          href={'https://wa.me/50663409795?text=' + encodeURIComponent(mensajeWA)}
-          target="_blank"
-          rel="noreferrer"
-          style={{ background: '#25D366', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}
-        >
-          Enviar comprobante por WhatsApp
-        </a>
+          <a href={'https://wa.me/50663409795?text=' + encodeURIComponent(mensajeWA)} target="_blank" rel="noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>Enviar comprobante por WhatsApp</a>
         <Link href="/" style={{ background: 'var(--black)', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>
           Seguir comprando →
         </Link>

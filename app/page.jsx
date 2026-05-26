@@ -184,8 +184,8 @@ export default function HomePage() {
             <ul className="footer-links">
               {[
                 ['/quienes-somos', 'Quiénes somos'],
-                ['/Términos de servicio', 'Términos de servicio'],
-                ['/Política de privacidad', 'Política de privacidad'],
+                ['/terminos-servicio', 'Términos de servicio'],,
+                ['/politica-privacidad', 'Política de privacidad'],,
               ].map(([href, label]) => (
                 <li key={label}><Link href={href}>{label}</Link></li>
               ))}

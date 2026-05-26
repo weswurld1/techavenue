@@ -66,7 +66,7 @@ export default function CarritoPage() {
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#16a34a', fontWeight: 600, marginBottom: 14 }}>
           <span>Envío</span>
-          <span>Gratis 🎉</span>
+          <span>Gratis </span>
         </div>
         <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--black)' }}>Total</span>

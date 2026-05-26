@@ -62,4 +62,22 @@ export default function CarritoPage() {
       <div style={{ background: 'var(--gray-100)', borderRadius: 8, padding: '20px 24px', marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--gray-600)', marginBottom: 8 }}>
           <span>Subtotal</span>
-          <span>₡{total.toLocal
+          <span>₡{total.toLocaleString('es-CR')}</span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#16a34a', fontWeight: 600, marginBottom: 14 }}>
+          <span>Envío</span>
+          <span>Gratis 🎉</span>
+        </div>
+        <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--black)' }}>Total</span>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: 'var(--black)', letterSpacing: '-0.02em' }}>₡{total.toLocaleString('es-CR')}</span>
+        </div>
+      </div>
+
+      <a href="/checkout" style={{ display: 'block', background: 'var(--black)', color: '#fff', padding: '14px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 15, textAlign: 'center' }}>
+        Proceder al checkout →
+      </a>
+      <Link href="/" style={{ display: 'block', textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--gray-400)', textDecoration: 'none' }}>← Seguir comprando</Link>
+    </div>
+  )
+}

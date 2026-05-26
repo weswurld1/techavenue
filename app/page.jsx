@@ -92,41 +92,40 @@ export default function HomePage() {
         </div>
       </div>
 
-{/* BRANDS */}
-<section style={{ borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)', padding: '20px 0', overflow: 'hidden', background: 'var(--white)' }}>
-  <div style={{
-    display: 'flex',
-    animation: 'marquee 25s linear infinite',
-    width: 'max-content',
-    alignItems: 'center',
-    gap: 64,
-  }}>
-    {[
-      { src: '/images/marcas/nvidia.png',   alt: 'NVIDIA' },
-      { src: '/images/marcas/amd.png',      alt: 'AMD' },
-      { src: '/images/marcas/intel.png',    alt: 'Intel' },
-      { src: '/images/marcas/asus.png',     alt: 'ASUS' },
-      { src: '/images/marcas/corsair.png',  alt: 'Corsair' },
-      { src: '/images/marcas/gigabyte.png', alt: 'Gigabyte' },
-      { src: '/images/marcas/msi.png',      alt: 'MSI' },
-      { src: '/images/marcas/nzxt.png',     alt: 'NZXT' },
-      { src: '/images/marcas/samsung.png',  alt: 'Samsung' },
-      // Repetido para loop continuo
-      { src: '/images/marcas/nvidia.png',   alt: 'NVIDIA2' },
-      { src: '/images/marcas/amd.png',      alt: 'AMD2' },
-      { src: '/images/marcas/intel.png',    alt: 'Intel2' },
-      { src: '/images/marcas/asus.png',     alt: 'ASUS2' },
-      { src: '/images/marcas/corsair.png',  alt: 'Corsair2' },
-      { src: '/images/marcas/gigabyte.png', alt: 'Gigabyte2' },
-      { src: '/images/marcas/msi.png',      alt: 'MSI2' },
-      { src: '/images/marcas/nzxt.png',     alt: 'NZXT2' },
-      { src: '/images/marcas/samsung.png',  alt: 'Samsung2' },
-    ].map(b => (
-      <img key={b.alt} src={b.src} alt={b.alt} style={{ height: 30, objectFit: 'contain', flexShrink: 0 }} />
-    ))}
-  </div>
-</section>
-      
+      {/* BRANDS */}
+      <section style={{ borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)', padding: '20px 0', overflow: 'hidden', background: 'var(--white)' }}>
+        <div style={{
+          display: 'flex',
+          animation: 'marquee-brands 25s linear infinite',
+          width: 'max-content',
+          alignItems: 'center',
+          gap: 64,
+        }}>
+          {[
+            { src: '/images/marcas/nvidia-logo.png',                    alt: 'NVIDIA' },
+            { src: '/images/marcas/amd-logo-black-and-white-1.png',     alt: 'AMD' },
+            { src: '/images/marcas/intel-logo-1.png',                   alt: 'Intel' },
+            { src: '/images/marcas/corsair-logo.png',                   alt: 'Corsair' },
+            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png',alt: 'Gigabyte' },
+            { src: '/images/marcas/msi-logo-black-and-white.png',       alt: 'MSI' },
+            { src: '/images/marcas/cooler-master-logo.png',             alt: 'Cooler Master' },
+            { src: '/images/marcas/kingston-logo-2.png',                alt: 'Kingston' },
+            { src: '/images/marcas/evga-logo-black-and-white.png',      alt: 'EVGA' },
+            { src: '/images/marcas/nvidia-logo.png',                    alt: 'NVIDIA2' },
+            { src: '/images/marcas/amd-logo-black-and-white-1.png',     alt: 'AMD2' },
+            { src: '/images/marcas/intel-logo-1.png',                   alt: 'Intel2' },
+            { src: '/images/marcas/corsair-logo.png',                   alt: 'Corsair2' },
+            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png',alt: 'Gigabyte2' },
+            { src: '/images/marcas/msi-logo-black-and-white.png',       alt: 'MSI2' },
+            { src: '/images/marcas/cooler-master-logo.png',             alt: 'Cooler Master2' },
+            { src: '/images/marcas/kingston-logo-2.png',                alt: 'Kingston2' },
+            { src: '/images/marcas/evga-logo-black-and-white.png',      alt: 'EVGA2' },
+          ].map(b => (
+            <img key={b.alt} src={b.src} alt={b.alt} style={{ height: 30, objectFit: 'contain', flexShrink: 0 }} />
+          ))}
+        </div>
+      </section>
+
       {/* WHY US */}
       <section className="why-section">
         <div className="why-inner">

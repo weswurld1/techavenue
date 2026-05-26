@@ -92,50 +92,59 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* BRANDS */}
-      <section className="brands-section">
-        <div className="brands-label">Trabajamos con las mejores marcas</div>
-        <div className="brands-row" style={{ alignItems: 'center', flexWrap: 'wrap', gap: 32, justifyContent: 'space-between' }}>
+{/* BRANDS */}
+<section className="brands-section">
+  <div className="brands-label">Trabajamos con las mejores marcas</div>
+  <div className="brands-row" style={{ alignItems: 'center', flexWrap: 'wrap', gap: 32, justifyContent: 'space-between' }}>
 
-          <svg height="24" viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#76B900" y="20">NVIDIA</text>
-          </svg>
+    {/* NVIDIA */}
+    <svg height="30" viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg">
+      <path d="M11.9 11.2v-1.7c.2 0 .4 0 .6-.1 5.3-.3 8.8 4.6 8.8 4.6s-3.7 5.3-7.7 5.3c-.6 0-1.2-.1-1.7-.3v-5.3c2.2.3 2.7 1.2 4 3.3l3-2.5s-2.1-2.8-5.1-3.2c-.6-.1-1.3-.1-1.9-.1zm0-6.8v2.3c.2 0 .4 0 .6-.1 7.3-.4 12.1 6 12.1 6s-5.5 6.7-11.2 6.7c-.5 0-1-.1-1.5-.1v1.4c.4.1.9.1 1.4.1 6.1 0 10.5-3.1 14.8-6.8 .7.6 3.6 1.9 4.2 2.5-4 3.4-13.4 7.3-18.9 7.3-.5 0-1 0-1.5-.1V24h19.5V4.4H11.9zm0 13.4v1.2c-4.9-.9-6.3-5.9-6.3-5.9s2.3-2.6 6.3-3v1.3c-2.2.3-3.9 2.2-3.9 2.2s1 3.6 3.9 4.2zm31.3-12h3.8l4.4 13.4 4.4-13.4h3.6l-6.4 18.2h-3.4L42.5 5.8zm17.3 0h3.6v18.2h-3.6V5.8zm5.7 0h7.4c5.4 0 8.6 3.2 8.6 9s-3.1 9.2-8.6 9.2h-7.4V5.8zm3.6 3.2v11.8h3.7c3.2 0 5-2.1 5-5.9 0-3.7-1.8-5.9-5-5.9h-3.7zm-26.7-3.2h4.1l5.2 12.4V5.8h3.4v18.2h-4.1l-5.2-12.4v12.4h-3.4V5.8z" fill="#76B900"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 55 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#ED1C24" y="20">AMD</text>
-          </svg>
+    {/* AMD */}
+    <svg height="30" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.1 4.5L4.5 25.5h4.8l2.1-4.5h9.3l2.1 4.5h4.8L17.1 4.5h-2zm1 5.8l3.2 7h-6.4l3.2-7zM28 4.5v21h4.5v-13l5.5 8h.8l5.5-8v13H49v-21h-4.2l-6.3 9.5L32.2 4.5H28zm25.5 0v21h9.5c6.5 0 10.5-3.8 10.5-10.5S69.5 4.5 63 4.5h-9.5zm4.5 4h5c3.8 0 6 2.3 6 6.5s-2.2 6.5-6 6.5h-5V8.5z" fill="#ED1C24"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 50 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial, sans-serif" fontWeight="700" fontSize="20" fill="#0068B5" y="20">intel</text>
-          </svg>
+    {/* Intel */}
+    <svg height="30" viewBox="0 0 70 30" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 6h4v18H8V6zm8 5h4v13h-4V11zm0-5h4v3h-4V6zm8 10c0-3.3 2.7-5.5 6-5.5 1.8 0 3.3.6 4.4 1.7l-2.5 2.5c-.5-.5-1.1-.8-1.9-.8-1.3 0-2.2.9-2.2 2.1v5c0 1.2.9 2.1 2.2 2.1.8 0 1.4-.3 1.9-.8l2.5 2.5c-1.1 1.1-2.6 1.7-4.4 1.7-3.3 0-6-2.2-6-5.5v-5zm14-5h4v2.5c.8-1.6 2.3-2.8 4.3-2.8v4c-2.5 0-4.3 1.2-4.3 4v6h-4V11zm10 6.5c0-3.8 3-6.5 7-6.5s7 2.7 7 6.5-3 6.5-7 6.5-7-2.7-7-6.5zm10 0c0-1.9-1.3-3.1-3-3.1s-3 1.2-3 3.1 1.3 3.1 3 3.1 3-1.2 3-3.1z" fill="#0068B5"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 65 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#1A1A1A" y="20">ASUS</text>
-          </svg>
+    {/* ASUS */}
+    <svg height="28" viewBox="0 0 90 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 5L0 23h6l2-4h8l2 4h6L14 5h-4zm2 4l2.5 6h-5L12 9zM27 5v12c0 2 1.2 3 3 3h8c1.8 0 3-1 3-3V5h-5v11h-4V5h-5zm19 0v4h7c.8 0 1 .3 1 .8 0 .6-.5.8-1 .8h-5c-2 0-3 1.2-3 3v2c0 2 1 3.4 3.5 3.4H61v-4h-8c-.5 0-1-.2-1-.8 0-.5.3-.8 1-.8h5c2 0 3.2-1.2 3.2-3v-2c0-2-1-4.2-3.5-4.2H46zm18 0v12c0 2 1.2 3 3 3h8c1.8 0 3-1 3-3V5h-5v11h-4V5h-5z" fill="#1A1A1A"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 110 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#F9BE16" y="20">CORSAIR</text>
-          </svg>
+    {/* Corsair */}
+    <svg height="28" viewBox="0 0 120 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 5C8.5 5 4 9.5 4 15s4.5 10 10 10c3 0 5.7-1.3 7.5-3.4l-3-2.6c-1.1 1.3-2.7 2-4.5 2-3.3 0-6-2.7-6-6s2.7-6 6-6c1.8 0 3.4.8 4.5 2l3-2.6C19.7 6.3 17 5 14 5zm12 .5V25h5V5.5h-5zm8 0V25h14c4 0 6.5-2 6.5-5.5 0-2.2-1-3.8-2.8-4.6 1.3-.8 2.2-2.2 2.2-4 0-3-2.2-5-5.8-5H34zm5 4h7.5c1.2 0 2 .6 2 1.8s-.8 1.7-2 1.7H39V9.5zm0 7h8c1.3 0 2.2.7 2.2 2s-.9 2.2-2.2 2.2H39V16.5zm20-11V25h5V5.5h-5zm8.5 0L60 25h5l1.5-4h8l1.5 4h5L73 5.5h-5.5zm2.5 4.5l2.5 7h-5l2.5-7zm14-4.5V25h5V16l7 9h6l-7.5-9.5L91 5.5h-6l-5.5 7V5.5h-5zm25 0c-3 0-5.5 2-5.5 5.5v3c0 3.5 2.5 5.5 5.5 5.5h4.5V21h-5c-1 0-1.5-.5-1.5-1.5V18h7v-4h-7v-2c0-1 .5-1.5 1.5-1.5h5v-4.5H100z" fill="#F9BE16"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 125 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#E2001A" y="20">GIGABYTE</text>
-          </svg>
+    {/* Gigabyte */}
+    <svg height="28" viewBox="0 0 50 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M25 3C13 3 3 13 3 25h8c0-7.7 6.3-14 14-14s14 6.3 14 14h8C47 13 37 3 25 3zm0 10c-6.6 0-12 5.4-12 12h8c0-2.2 1.8-4 4-4s4 1.8 4 4h8c0-6.6-5.4-12-12-12z" fill="#E2001A"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 42 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#D40000" y="20">MSI</text>
-          </svg>
+    {/* MSI */}
+    <svg height="28" viewBox="0 0 70 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 5v18h5V13l5 10h4l5-10v10h5V5H23l-6 12-6-12H5zm28 0v18h5V5h-5zm10 0v5h8c1 0 1.5.4 1.5 1.2 0 .8-.6 1.3-1.5 1.3h-6c-2.5 0-4 1.5-4 4v1.5c0 2.8 1.5 5 5 5H60v-5h-9c-.8 0-1.5-.4-1.5-1.2 0-.8.5-1.3 1.5-1.3h5.5c2.8 0 4.5-1.8 4.5-4.5v-1c0-3-1.8-5-5-5H43z" fill="#D40000"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 65 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#000000" y="20">NZXT</text>
-          </svg>
+    {/* NZXT */}
+    <svg height="28" viewBox="0 0 80 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 5v18h5V13l10 10h5V5h-5v10L10 5H5zm25 0v5h7v13h5V10h7V5H30zm18 0l7 9-7 9h6l4-5 4 5h6l-7-9 7-9h-6l-4 5-4-5h-6z" fill="#000000"/>
+    </svg>
 
-          <svg height="24" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg">
-            <text fontFamily="Arial, sans-serif" fontWeight="700" fontSize="20" fill="#1428A0" y="20">SAMSUNG</text>
-          </svg>
+    {/* Samsung */}
+    <svg height="28" viewBox="0 0 130 28" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 5v5h8c1 0 1.8.5 1.8 1.5S17 13 16 13h-6c-3 0-5 2-5 5v1c0 3 2 5 5.5 5H23v-5h-9c-.8 0-1.5-.5-1.5-1.5s.5-1.5 1.5-1.5h5.5c3 0 5-1.8 5-5v-1c0-3-2-5.5-5.5-5.5H8zm21 0L21 23h5l1.5-4.5h8L37 23h5L34 5h-5zm2.5 5l2.5 6.5h-5L31.5 10zM44 5v18h5V13l5 10h3l5-10v10h5V5h-6l-6 11-6-11h-5zm28 0v18h5V5h-5zm9.5 0L74 23h5l1.5-4.5h8L90 23h5L87 5h-5.5zm2.5 5l2.5 6.5h-5L84 10zM97 5v18h5V13l10 10h5V5h-5v10L102 5h-5zm26 0v10c0 5.5-2.5 8-7 8h-1v-5h.5c2 0 2.5-1 2.5-3V5h5z" fill="#1428A0"/>
+    </svg>
 
-        </div>
-      </section>
-
+  </div>
+</section>
+      
       {/* WHY US */}
       <section className="why-section">
         <div className="why-inner">

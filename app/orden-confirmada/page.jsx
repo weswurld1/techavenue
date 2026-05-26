@@ -9,7 +9,7 @@ function ConfirmacionContent() {
   const total = Number(params.get('total')) || 0
   const nombre = params.get('nombre') || 'Cliente'
 
-  const mensajeWA = `Hola! Acabo de realizar un pedido en TechAvenue. Mi número de orden es ${orden} por un total de ₡${total.toLocaleString('es-CR')}. Adjunto el comprobante de transferencia.`
+  const mensajeWA = 'Hola! Acabo de realizar un pedido en TechAvenue. Mi número de orden es ' + orden + ' por un total de ₡' + total.toLocaleString('es-CR') + '. Adjunto el comprobante de transferencia.'
 
   return (
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '72px 32px 96px', textAlign: 'center' }}>
@@ -62,7 +62,7 @@ function ConfirmacionContent() {
 
       <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
         
-          href={`https://wa.me/50663409795?text=' + {encodeURIComponent(mensajeWA)}}
+          href={'https://wa.me/50663409795?text=' + encodeURIComponent(mensajeWA)}
           target="_blank"
           rel="noreferrer"
           style={{ background: '#25D366', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}

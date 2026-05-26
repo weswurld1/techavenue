@@ -193,7 +193,7 @@ export default function HomePage() {
             <div className="footer-col-title">Soporte</div>
             <ul className="footer-links">
               {[
-                ['#', 'Centro de ayuda'],
+                ['/centro-ayuda', 'Centro de ayuda'],
                 ['#', 'Estado de mi pedido'],
                 ['#', 'Política de garantía'],
                 ['/politica-devoluciones', 'Devoluciones'],

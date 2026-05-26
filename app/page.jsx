@@ -194,7 +194,7 @@ export default function HomePage() {
             <ul className="footer-links">
               {[
                 ['/centro-ayuda', 'Centro de ayuda'],
-                ['#', 'Estado de mi pedido'],
+                ['/estado-pedido', 'Estado de mi pedido'],
                 ['#', 'Política de garantía'],
                 ['/politica-devoluciones', 'Devoluciones'],
                 ['#', 'Contacto'],

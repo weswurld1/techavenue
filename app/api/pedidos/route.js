@@ -25,7 +25,7 @@ export async function POST(request) {
 
     const numeroOrden = generarNumeroOrden()
 
-    await supabase.from('pedidos').insert({
+    const { error: supabaseError } = await supabase.from('pedidos').insert({
       numero_orden: numeroOrden,
       nombre,
       apellido,
@@ -39,6 +39,10 @@ export async function POST(request) {
       total,
       estado: 'recibido',
     })
+    if (supabaseError) {
+      console.error('SUPABASE ERROR:', supabaseError)
+      return Response.json({ success: false, error: supabaseError.message }, { status: 500 })
+    }  
 
     const productosHTML = productos.map(p =>
       `<tr>

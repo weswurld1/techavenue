@@ -95,10 +95,44 @@ export default function HomePage() {
       {/* BRANDS */}
       <section className="brands-section">
         <div className="brands-label">Trabajamos con las mejores marcas</div>
-        <div className="brands-row">
-          {['NVIDIA','AMD','Intel','ASUS','Corsair','Gigabyte','MSI','NZXT','Samsung'].map(b => (
-            <span className="brand-logo" key={b}>{b}</span>
-          ))}
+        <div className="brands-row" style={{ alignItems: 'center', flexWrap: 'wrap', gap: 32, justifyContent: 'space-between' }}>
+
+          <svg height="24" viewBox="0 0 90 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#76B900" y="20">NVIDIA</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 55 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#ED1C24" y="20">AMD</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 50 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial, sans-serif" fontWeight="700" fontSize="20" fill="#0068B5" y="20">intel</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 65 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#1A1A1A" y="20">ASUS</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 110 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#F9BE16" y="20">CORSAIR</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 125 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#E2001A" y="20">GIGABYTE</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 42 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#D40000" y="20">MSI</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 65 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="20" fill="#000000" y="20">NZXT</text>
+          </svg>
+
+          <svg height="24" viewBox="0 0 120 24" xmlns="http://www.w3.org/2000/svg">
+            <text fontFamily="Arial, sans-serif" fontWeight="700" fontSize="20" fill="#1428A0" y="20">SAMSUNG</text>
+          </svg>
+
         </div>
       </section>
 
@@ -184,8 +218,8 @@ export default function HomePage() {
             <ul className="footer-links">
               {[
                 ['/quienes-somos', 'Quiénes somos'],
-                ['/terminos-servicio', 'Términos de servicio'],,
-                ['/politica-privacidad', 'Política de privacidad'],,
+                ['/terminos-servicio', 'Términos de servicio'],
+                ['/politica-privacidad', 'Política de privacidad'],
               ].map(([href, label]) => (
                 <li key={label}><Link href={href}>{label}</Link></li>
               ))}

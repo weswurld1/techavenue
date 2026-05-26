@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 
 const slides = [
   {
@@ -84,7 +83,7 @@ export default function Slideshow() {
             <div className="section-label">Selección</div>
             <div className="section-title">Productos destacados</div>
           </div>
-          <Link href="/productos" className="section-link">Ver todos →</Link>
+          <a href="/productos" className="section-link">Ver todos →</a>
         </div>
 
         <div
@@ -117,7 +116,7 @@ export default function Slideshow() {
                   </div>
                   <div className="slide-info">
                     <span className="slide-brand">{s.brand}</span>
-                    <Link href={s.href} className="slide-name">{s.name}</Link>
+                    <a href={s.href} className="slide-name">{s.name}</a>
                     <span className="slide-spec">
                       {s.spec.split('\n').map((line, j) => (
                         <span key={j}>{line}<br /></span>

@@ -15,8 +15,8 @@ export default function Navbar() {
       <nav>
         <div className="nav-inner">
           <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img src="/logo-icono.png" alt="TechAvenue" style={{ height: 28 }} />
-            <img src="/logo-texto.png" alt="TechAvenue" style={{ height: 18 }} />
+            <img src="/icono.png" alt="TechAvenue" style={{ height: 28 }} />
+            <img src="/texto.png" alt="TechAvenue" style={{ height: 18 }} />
           </Link>
           <div className="nav-links">
             <Link href="/categoria/gpu">GPU</Link>

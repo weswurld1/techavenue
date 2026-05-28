@@ -7,10 +7,11 @@ export async function POST(request) {
     process.env.SUPABASE_SECRET_KEY
   )
   try {
-    const { id, estado } = await request.json()
+    const body = await request.json()
+    const { id, ...campos } = body
     const { error } = await supabase
       .from('pedidos')
-      .update({ estado })
+      .update(campos)
       .eq('id', id)
     if (error) return Response.json({ success: false, error: error.message }, { status: 500 })
     return Response.json({ success: true })

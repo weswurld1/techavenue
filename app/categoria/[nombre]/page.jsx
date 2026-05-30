@@ -15,6 +15,36 @@ const NOMBRES_CATEGORIA = {
   'redes': 'Redes',
 }
 
+const FILTROS_CATEGORIA = {
+  'gpu':            ['marca', 'vram', 'tipo_gpu', 'en_oferta'],
+  'cpu':            ['marca', 'nucleos', 'socket', 'en_oferta'],
+  'ram':            ['marca', 'capacidad', 'frecuencia', 'en_oferta'],
+  'almacenamiento': ['marca', 'tipo_almacenamiento', 'capacidad', 'en_oferta'],
+  'placas-madre':   ['marca', 'socket', 'factor_forma', 'en_oferta'],
+  'perifericos':    ['marca', 'tipo_periferico', 'en_oferta'],
+  'gabinetes':      ['marca', 'factor_forma', 'en_oferta'],
+  'refrigeracion':  ['marca', 'tipo_refrigeracion', 'en_oferta'],
+  'fuentes-de-poder': ['marca', 'potencia', 'certificacion', 'en_oferta'],
+  'redes':          ['marca', 'tipo_red', 'en_oferta'],
+}
+
+const ETIQUETAS_FILTRO = {
+  marca: 'Marca',
+  vram: 'Memoria VRAM',
+  tipo_gpu: 'Fabricante GPU',
+  nucleos: 'Núcleos',
+  socket: 'Socket',
+  capacidad: 'Capacidad',
+  frecuencia: 'Frecuencia',
+  tipo_almacenamiento: 'Tipo',
+  factor_forma: 'Factor de forma',
+  tipo_periferico: 'Tipo',
+  tipo_refrigeracion: 'Tipo',
+  potencia: 'Potencia',
+  certificacion: 'Certificación',
+  tipo_red: 'Tipo',
+}
+
 const ORDENAR_OPCIONES = [
   { value: 'default',     label: 'Destacados' },
   { value: 'precio-asc',  label: 'Precio: menor a mayor' },
@@ -27,39 +57,72 @@ const PRODUCTOS_API = []
 export default function CategoriaPage({ params }) {
   const nombreCategoria = NOMBRES_CATEGORIA[params.nombre] || params.nombre
   const productos = PRODUCTOS_API
+  const filtrosActivos = FILTROS_CATEGORIA[params.nombre] || ['marca', 'en_oferta']
 
-  const marcas = useMemo(() => [...new Set(productos.map(p => p.marca))].sort(), [productos])
   const precios = useMemo(() => productos.map(p => p.precio), [productos])
   const precioMin = precios.length ? Math.min(...precios) : 0
   const precioMax = precios.length ? Math.max(...precios) : 1000000
 
-  const [marcasSeleccionadas, setMarcasSeleccionadas] = useState([])
-  const [rangoMax, setRangoMax] = useState(precioMax)
-  const [ordenar, setOrdenar] = useState('default')
-  const [soloEnStock, setSoloEnStock] = useState(false)
+  const opcionesFiltro = useMemo(() => {
+    const result = {}
+    filtrosActivos.forEach(filtro => {
+      if (filtro === 'en_oferta') return
+      result[filtro] = [...new Set(productos.map(p => p[filtro]).filter(Boolean))].sort()
+    })
+    return result
+  }, [productos, filtrosActivos])
 
-  const toggleMarca = (marca) => {
-    setMarcasSeleccionadas(prev =>
-      prev.includes(marca) ? prev.filter(m => m !== marca) : [...prev, marca]
-    )
+  const [seleccionados, setSeleccionados] = useState({})
+  const [precioDesde, setPrecioDesde] = useState(precioMin)
+  const [precioHasta, setPrecioHasta] = useState(precioMax)
+  const [soloEnStock, setSoloEnStock] = useState(false)
+  const [soloEnOferta, setSoloEnOferta] = useState(false)
+  const [ordenar, setOrdenar] = useState('default')
+
+  const toggleFiltro = (clave, valor) => {
+    setSeleccionados(prev => {
+      const actual = prev[clave] || []
+      return {
+        ...prev,
+        [clave]: actual.includes(valor) ? actual.filter(v => v !== valor) : [...actual, valor]
+      }
+    })
   }
+
+  const limpiarFiltros = () => {
+    setSeleccionados({})
+    setPrecioDesde(precioMin)
+    setPrecioHasta(precioMax)
+    setSoloEnStock(false)
+    setSoloEnOferta(false)
+  }
+
+  const hayFiltrosActivos = Object.values(seleccionados).some(v => v.length > 0) || soloEnStock || soloEnOferta || precioDesde > precioMin || precioHasta < precioMax
 
   const productosFiltrados = useMemo(() => {
     let result = [...productos]
-    if (marcasSeleccionadas.length > 0) result = result.filter(p => marcasSeleccionadas.includes(p.marca))
     if (soloEnStock) result = result.filter(p => p.stock > 0)
-    result = result.filter(p => p.precio <= rangoMax)
+    if (soloEnOferta) result = result.filter(p => p.en_oferta)
+    result = result.filter(p => p.precio >= precioDesde && p.precio <= precioHasta)
+    Object.entries(seleccionados).forEach(([clave, valores]) => {
+      if (valores.length > 0) result = result.filter(p => valores.includes(p[clave]))
+    })
     if (ordenar === 'precio-asc') result.sort((a, b) => a.precio - b.precio)
     if (ordenar === 'precio-desc') result.sort((a, b) => b.precio - a.precio)
     if (ordenar === 'nombre') result.sort((a, b) => a.nombre.localeCompare(b.nombre))
     return result
-  }, [productos, marcasSeleccionadas, rangoMax, ordenar, soloEnStock])
+  }, [productos, seleccionados, precioDesde, precioHasta, soloEnStock, soloEnOferta, ordenar])
 
   const inputStyle = {
     width: '100%', padding: '8px 12px', fontSize: 13,
     border: '1.5px solid var(--gray-200)', borderRadius: 6,
     fontFamily: 'var(--font-body)', outline: 'none',
     background: 'var(--white)', color: 'var(--black)',
+  }
+
+  const seccionLabel = {
+    fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+    letterSpacing: '0.08em', color: 'var(--gray-600)', marginBottom: 12,
   }
 
   return (
@@ -78,69 +141,82 @@ export default function CategoriaPage({ params }) {
 
         <div>
           <div style={{ position: 'sticky', top: 24 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
-              Filtros
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)' }}>
+                Filtros
+              </div>
+              {hayFiltrosActivos && (
+                <button onClick={limpiarFiltros} style={{ fontSize: 11, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}>
+                  Limpiar
+                </button>
+              )}
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: 'var(--black)', fontWeight: 500 }}>
-                <input
-                  type="checkbox"
-                  checked={soloEnStock}
-                  onChange={e => setSoloEnStock(e.target.checked)}
-                  style={{ width: 15, height: 15, cursor: 'pointer' }}
-                />
-                Solo en stock
-              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
+                  <input type="checkbox" checked={soloEnStock} onChange={e => setSoloEnStock(e.target.checked)} style={{ width: 15, height: 15, cursor: 'pointer' }} />
+                  Solo en stock
+                </label>
+                {filtrosActivos.includes('en_oferta') && (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
+                    <input type="checkbox" checked={soloEnOferta} onChange={e => setSoloEnOferta(e.target.checked)} style={{ width: 15, height: 15, cursor: 'pointer' }} />
+                    Solo en oferta
+                  </label>
+                )}
+              </div>
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--gray-600)', marginBottom: 12 }}>
-                Precio máximo
-              </div>
-              <input
-                type="range"
-                min={precioMin}
-                max={precioMax}
-                value={rangoMax}
-                onChange={e => setRangoMax(Number(e.target.value))}
-                style={{ width: '100%', cursor: 'pointer' }}
-              />
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--gray-600)', marginTop: 6 }}>
-                <span>₡{precioMin.toLocaleString('es-CR')}</span>
-                <span style={{ fontWeight: 600, color: 'var(--black)' }}>₡{rangoMax.toLocaleString('es-CR')}</span>
+              <div style={seccionLabel}>Rango de precio</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Desde</div>
+                  <input
+                    type="number"
+                    value={precioDesde}
+                    onChange={e => setPrecioDesde(Number(e.target.value))}
+                    style={inputStyle}
+                    min={precioMin}
+                    max={precioHasta}
+                  />
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Hasta</div>
+                  <input
+                    type="number"
+                    value={precioHasta}
+                    onChange={e => setPrecioHasta(Number(e.target.value))}
+                    style={inputStyle}
+                    min={precioDesde}
+                    max={precioMax}
+                  />
+                </div>
               </div>
             </div>
 
-            {marcas.length > 0 && (
-              <div style={{ marginBottom: 24 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--gray-600)', marginBottom: 12 }}>
-                  Marca
+            {filtrosActivos.filter(f => f !== 'en_oferta').map(clave => {
+              const opciones = opcionesFiltro[clave] || []
+              if (opciones.length === 0) return null
+              return (
+                <div key={clave} style={{ marginBottom: 24 }}>
+                  <div style={seccionLabel}>{ETIQUETAS_FILTRO[clave] || clave}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {opciones.map(opcion => (
+                      <label key={opcion} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13 }}>
+                        <input
+                          type="checkbox"
+                          checked={(seleccionados[clave] || []).includes(opcion)}
+                          onChange={() => toggleFiltro(clave, opcion)}
+                          style={{ width: 15, height: 15, cursor: 'pointer' }}
+                        />
+                        {opcion}
+                      </label>
+                    ))}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {marcas.map(marca => (
-                    <label key={marca} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13 }}>
-                      <input
-                        type="checkbox"
-                        checked={marcasSeleccionadas.includes(marca)}
-                        onChange={() => toggleMarca(marca)}
-                        style={{ width: 15, height: 15, cursor: 'pointer' }}
-                      />
-                      {marca}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {(marcasSeleccionadas.length > 0 || soloEnStock || rangoMax !== precioMax) && (
-              <button
-                onClick={() => { setMarcasSeleccionadas([]); setSoloEnStock(false); setRangoMax(precioMax) }}
-                style={{ fontSize: 12, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontWeight: 600 }}
-              >
-                Limpiar filtros
-              </button>
-            )}
+              )
+            })}
           </div>
         </div>
 
@@ -149,11 +225,7 @@ export default function CategoriaPage({ params }) {
             <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
               {productosFiltrados.length} producto{productosFiltrados.length !== 1 ? 's' : ''}
             </div>
-            <select
-              value={ordenar}
-              onChange={e => setOrdenar(e.target.value)}
-              style={{ ...inputStyle, width: 'auto' }}
-            >
+            <select value={ordenar} onChange={e => setOrdenar(e.target.value)} style={{ ...inputStyle, width: 'auto' }}>
               {ORDENAR_OPCIONES.map(o => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
@@ -162,12 +234,11 @@ export default function CategoriaPage({ params }) {
 
           {productosFiltrados.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--gray-400)' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>📦</div>
               <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--black)', marginBottom: 8 }}>
                 Productos próximamente
               </div>
               <div style={{ fontSize: 14 }}>
-                Estamos preparando el catálogo de {nombreCategoria}. Volvé pronto.
+                Estamos preparando el catálogo de TechAvenue. Volvé pronto.
               </div>
             </div>
           ) : (
@@ -175,10 +246,15 @@ export default function CategoriaPage({ params }) {
               {productosFiltrados.map(p => (
                 <Link key={p.id} href={`/producto/${p.sku}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div
-                    style={{ border: '1.5px solid var(--gray-200)', borderRadius: 10, overflow: 'hidden', transition: 'border-color 0.15s, box-shadow 0.15s', cursor: 'pointer' }}
+                    style={{ border: '1.5px solid var(--gray-200)', borderRadius: 10, overflow: 'hidden', transition: 'border-color 0.15s, box-shadow 0.15s', cursor: 'pointer', position: 'relative' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--black)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)' }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--gray-200)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
+                    {p.en_oferta && (
+                      <div style={{ position: 'absolute', top: 10, left: 10, background: '#DC2626', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, zIndex: 1 }}>
+                        Oferta
+                      </div>
+                    )}
                     <div style={{ background: 'var(--gray-100)', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {p.imagen ? (
                         <img src={p.imagen} alt={p.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
@@ -186,7 +262,6 @@ export default function CategoriaPage({ params }) {
                         <div style={{ color: 'var(--gray-300)', fontSize: 12 }}>Sin imagen</div>
                       )}
                     </div>
-
                     <div style={{ padding: '14px 16px' }}>
                       <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                         {p.marca}
@@ -198,8 +273,15 @@ export default function CategoriaPage({ params }) {
                         SKU: {p.sku}
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: 'var(--black)' }}>
-                          ₡{p.precio.toLocaleString('es-CR')}
+                        <div>
+                          {p.precio_original && (
+                            <div style={{ fontSize: 11, color: 'var(--gray-400)', textDecoration: 'line-through' }}>
+                              ₡{p.precio_original.toLocaleString('es-CR')}
+                            </div>
+                          )}
+                          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: p.en_oferta ? '#DC2626' : 'var(--black)' }}>
+                            ₡{p.precio.toLocaleString('es-CR')}
+                          </div>
                         </div>
                         <div style={{
                           fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20,

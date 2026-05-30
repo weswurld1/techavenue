@@ -1,6 +1,11 @@
 'use client'
 import { CartProvider } from '../context/CartContext'
+import { ToastProvider } from './Toast'
 
 export default function Providers({ children }) {
-  return <CartProvider>{children}</CartProvider>
+  return (
+    <CartProvider>
+      <ToastProvider>{children}</ToastProvider>
+    </CartProvider>
+  )
 }

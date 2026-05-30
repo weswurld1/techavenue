@@ -21,7 +21,7 @@ export async function POST(request) {
 
   try {
     const body = await request.json()
-    const { nombre, apellido, provincia, canton, direccion, telefono, correo, notas, productos, total } = body
+    const { nombre, apellido, provincia, canton, direccion, telefono, correo, notas, productos, total, metodoPago, descuento, envio } = body
 
     const numeroOrden = generarNumeroOrden()
 
@@ -37,12 +37,14 @@ export async function POST(request) {
       notas,
       productos,
       total,
+      metodo_pago: metodoPago,
       estado: 'recibido',
     })
+
     if (supabaseError) {
       console.error('SUPABASE ERROR:', supabaseError)
       return Response.json({ success: false, error: supabaseError.message }, { status: 500 })
-    }  
+    }
 
     const productosHTML = productos.map(p =>
       `<tr>
@@ -51,6 +53,11 @@ export async function POST(request) {
         <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₡${p.precio.toLocaleString('es-CR')}</td>
       </tr>`
     ).join('')
+
+    const resumenPagoHTML = metodoPago === 'anticipado'
+      ? `<tr style="background:#F0FDF4;"><td style="padding:6px;color:#16A34A;font-weight:600;">Descuento (3%)</td><td style="padding:6px;color:#16A34A;font-weight:600;">-₡${descuento?.toLocaleString('es-CR')}</td></tr>
+         <tr><td style="padding:6px;color:#16A34A;font-weight:600;">Envio</td><td style="padding:6px;color:#16A34A;font-weight:600;">Gratis</td></tr>`
+      : `<tr><td style="padding:6px;color:#666;">Envio</td><td style="padding:6px;font-weight:500;">₡${envio?.toLocaleString('es-CR')}</td></tr>`
 
     await resend.emails.send({
       from: 'TechAvenue <ventas@techavenuecr.com>',
@@ -66,6 +73,11 @@ export async function POST(request) {
             <div style="background:#1E3A8A;color:#fff;padding:12px 20px;border-radius:6px;margin-bottom:20px;text-align:center;">
               <p style="margin:0;font-size:12px;opacity:0.8;">Numero de orden</p>
               <p style="margin:4px 0 0;font-size:22px;font-weight:700;">${numeroOrden}</p>
+            </div>
+            <div style="background:${metodoPago === 'anticipado' ? '#F0FDF4' : '#EEF2FF'};border-radius:6px;padding:10px 16px;margin-bottom:20px;text-align:center;">
+              <p style="margin:0;font-size:13px;font-weight:600;color:${metodoPago === 'anticipado' ? '#16A34A' : '#1E3A8A'};">
+                Metodo de pago: ${metodoPago === 'anticipado' ? 'Pago anticipado (3% descuento)' : 'Contra entrega'}
+              </p>
             </div>
             <h2 style="font-size:16px;color:#0d0d0d;margin:0 0 12px;">Datos del cliente</h2>
             <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
@@ -87,6 +99,9 @@ export async function POST(request) {
                 </tr>
               </thead>
               <tbody>${productosHTML}</tbody>
+            </table>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;">
+              ${resumenPagoHTML}
             </table>
             <div style="background:#0d0d0d;color:#fff;padding:14px 20px;border-radius:6px;">
               <span style="font-size:14px;">Total del pedido</span>
@@ -124,10 +139,14 @@ export async function POST(request) {
               </thead>
               <tbody>${productosHTML}</tbody>
             </table>
+            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px;">
+              ${resumenPagoHTML}
+            </table>
             <div style="padding:12px;background:#0d0d0d;border-radius:6px;color:#fff;margin-bottom:20px;">
               <span style="font-size:14px;">Total</span>
               <span style="font-size:16px;font-weight:700;color:#F9BE16;float:right;">₡${total.toLocaleString('es-CR')}</span>
             </div>
+            ${metodoPago === 'anticipado' ? `
             <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:16px;margin-bottom:20px;">
               <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:#1E3A8A;">Datos para tu transferencia bancaria</p>
               <table style="width:100%;font-size:13px;">
@@ -136,7 +155,7 @@ export async function POST(request) {
                 <tr><td style="color:#666;padding:3px 0;">A nombre de</td><td style="font-weight:500;color:#0d0d0d;">Juan Paulo Ulate Barcelli</td></tr>
                 <tr><td style="color:#666;padding:3px 0;">Monto exacto</td><td style="font-weight:700;color:#1E3A8A;">₡${total.toLocaleString('es-CR')}</td></tr>
               </table>
-            </div>
+            </div>` : ''}
             <a href="https://wa.me/50663409795" style="display:inline-block;background:#25D366;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">Contactar por WhatsApp</a>
           </div>
           <div style="background:#f5f5f5;padding:16px;text-align:center;">

@@ -12,11 +12,11 @@ const ESTADOS = [
 ]
 
 const FILTROS = [
-  { key: 'todos',          label: 'Todos' },
-  { key: 'anticipado',     label: 'Pago anticipado' },
-  { key: 'contraentrega',  label: 'Contra entrega' },
-  { key: 'garantia',       label: 'En garantia' },
-  { key: 'archivados',     label: 'Archivados' },
+  { key: 'todos',         label: 'Todos' },
+  { key: 'anticipado',    label: 'Pago anticipado' },
+  { key: 'contraentrega', label: 'Contra entrega' },
+  { key: 'garantia',      label: 'En garantia' },
+  { key: 'archivados',    label: 'Archivados' },
 ]
 
 export default function AdminPage() {
@@ -27,6 +27,9 @@ export default function AdminPage() {
   const [input, setInput] = useState('')
   const [errorAuth, setErrorAuth] = useState(false)
   const [filtro, setFiltro] = useState('todos')
+  const [skuInput, setSkuInput] = useState('')
+  const [destacados, setDestacados] = useState([])
+  const [cargandoDestacados, setCargandoDestacados] = useState(true)
 
   const login = () => {
     if (input === CONTRASENA) {
@@ -42,6 +45,9 @@ export default function AdminPage() {
     fetch('/api/admin/pedidos')
       .then(r => r.json())
       .then(d => { setPedidos(d.pedidos || []); setCargando(false) })
+    fetch('/api/destacados')
+      .then(r => r.json())
+      .then(d => { setDestacados(d.productos || []); setCargandoDestacados(false) })
   }, [autenticado])
 
   const cambiarEstado = async (id, estado) => {
@@ -75,6 +81,26 @@ export default function AdminPage() {
     })
     setPedidos(prev => prev.map(p => p.id === id ? { ...p, archivado: valor } : p))
     setGuardando(null)
+  }
+
+  const agregarDestacado = async () => {
+    if (!skuInput.trim()) return
+    await fetch('/api/destacados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sku: skuInput.trim() })
+    })
+    setDestacados(prev => [...prev, { sku: skuInput.trim() }])
+    setSkuInput('')
+  }
+
+  const eliminarDestacado = async (id) => {
+    await fetch('/api/destacados', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    })
+    setDestacados(prev => prev.filter(d => d.id !== id))
   }
 
   const pedidosFiltrados = pedidos.filter(p => {
@@ -121,7 +147,6 @@ export default function AdminPage() {
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 32px' }}>
 
-      {/* HEADER */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
         <div>
           <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 40, margin: 0 }}>Panel Admin</h1>
@@ -143,7 +168,6 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* FILTROS */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, borderBottom: '1px solid var(--gray-200)', paddingBottom: 0 }}>
         {FILTROS.map(f => (
           <button
@@ -169,7 +193,6 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {/* TABLA */}
       {pedidosFiltrados.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--gray-400)', fontSize: 14 }}>
           No hay pedidos en esta categoria.
@@ -249,6 +272,48 @@ export default function AdminPage() {
           </tbody>
         </table>
       )}
+
+      <div style={{ marginTop: 64 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
+          Productos destacados
+        </div>
+
+        <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+          <input
+            value={skuInput}
+            onChange={e => setSkuInput(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && agregarDestacado()}
+            placeholder="Ingresá el SKU del producto"
+            style={{ flex: 1, padding: '10px 14px', fontSize: 14, border: '1.5px solid var(--gray-200)', borderRadius: 6, outline: 'none', fontFamily: 'var(--font-body)' }}
+          />
+          <button
+            onClick={agregarDestacado}
+            style={{ background: 'var(--black)', color: '#fff', border: 'none', borderRadius: 6, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}
+          >
+            Agregar
+          </button>
+        </div>
+
+        {cargandoDestacados ? (
+          <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>Cargando...</div>
+        ) : destacados.length === 0 ? (
+          <div style={{ fontSize: 14, color: 'var(--gray-400)' }}>No hay productos destacados. Agregá un SKU arriba.</div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {destacados.map(d => (
+              <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', border: '1px solid var(--gray-200)', borderRadius: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#1E3A8A' }}>SKU: {d.sku}</div>
+                <button
+                  onClick={() => eliminarDestacado(d.id)}
+                  style={{ fontSize: 12, color: '#DC2626', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

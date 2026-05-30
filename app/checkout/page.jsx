@@ -84,14 +84,14 @@ export default function CheckoutPage() {
         Checkout
       </h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)', gap: 40 }}>
+      <div className="checkout-grid">
 
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
             Datos de entrega
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row-2">
             <div style={fieldStyle}>
               <label style={labelStyle}>Nombre *</label>
               <input style={inputStyle} value={form.nombre} onChange={e => set('nombre', e.target.value)} placeholder="Juan" />
@@ -102,7 +102,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row-2">
             <div style={fieldStyle}>
               <label style={labelStyle}>Provincia *</label>
               <select style={inputStyle} value={form.provincia} onChange={e => set('provincia', e.target.value)}>
@@ -123,7 +123,7 @@ export default function CheckoutPage() {
             <input style={inputStyle} value={form.direccion} onChange={e => set('direccion', e.target.value)} placeholder="100m norte del parque, casa azul..." />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div className="form-row-2">
             <div style={fieldStyle}>
               <label style={labelStyle}>Teléfono *</label>
               <input style={inputStyle} value={form.telefono} onChange={e => set('telefono', e.target.value)} placeholder="6340-9795" />
@@ -202,7 +202,7 @@ export default function CheckoutPage() {
             Método de pago
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+          <div className="form-row-2" style={{ marginBottom: 20 }}>
             <button
               onClick={() => setMetodoPago('anticipado')}
               style={{

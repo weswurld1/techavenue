@@ -78,6 +78,7 @@ export default function CategoriaPage({ params }) {
   const [soloEnStock, setSoloEnStock] = useState(false)
   const [soloEnOferta, setSoloEnOferta] = useState(false)
   const [ordenar, setOrdenar] = useState('default')
+  const [filtrosMobileOpen, setFiltrosMobileOpen] = useState(false)
 
   const toggleFiltro = (clave, valor) => {
     setSeleccionados(prev => {
@@ -137,9 +138,9 @@ export default function CategoriaPage({ params }) {
         </h1>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: 40 }}>
+      <div className="category-layout">
 
-        <div>
+        <div className={`category-sidebar${filtrosMobileOpen ? ' open' : ''}`}>
           <div style={{ position: 'sticky', top: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
               <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)' }}>
@@ -221,6 +222,17 @@ export default function CategoriaPage({ params }) {
         </div>
 
         <div>
+          <button
+            className="category-filter-toggle"
+            onClick={() => setFiltrosMobileOpen(prev => !prev)}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+            </svg>
+            {filtrosMobileOpen ? 'Ocultar filtros' : 'Mostrar filtros'}
+            {hayFiltrosActivos && <span style={{ background: 'var(--accent)', color: '#fff', borderRadius: '50%', width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700 }}>!</span>}
+          </button>
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
             <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
               {productosFiltrados.length} producto{productosFiltrados.length !== 1 ? 's' : ''}

@@ -1,5 +1,6 @@
 import './globals.css'
 import Navbar from '../components/Navbar'
+import Providers from '../components/Providers'
 import { Suspense } from 'react'
 
 export const dynamic = 'force-dynamic'
@@ -20,10 +21,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body>
-        <Suspense fallback={null}>
-          <Navbar />
-          {children}
-        </Suspense>
+        <Providers>
+          <Suspense fallback={null}>
+            <Navbar />
+            {children}
+          </Suspense>
+        </Providers>
       </body>
     </html>
   )

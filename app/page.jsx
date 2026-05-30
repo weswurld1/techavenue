@@ -199,7 +199,7 @@ export default function HomePage() {
           <div className="footer-legal">
             <Link href="/politica-privacidad">Privacidad</Link>
             <Link href="/terminos-servicio">Términos</Link>
-            <a href="#">Cookies</a>
+            <Link href="/politica-cookies">Cookies</Link>
           </div>
         </div>
       </footer>

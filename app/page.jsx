@@ -79,7 +79,7 @@ export default function HomePage() {
               <div className="banner-text">Armá tu PC<br />con nosotros.</div>
               <p className="banner-sub">Todos los componentes en un solo lugar. Stock real, garantía oficial, soporte técnico.</p>
             </div>
-            <button className="btn-white">Ver catálogo completo →</button>
+            <a href="https://techavenuecr.com/productos" className="btn-white">Ver catálogo completo →</a>
           </div>
         </div>
       </div>

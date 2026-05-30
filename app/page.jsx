@@ -173,7 +173,7 @@ export default function HomePage() {
               {[
                 ['/centro-ayuda', 'Centro de ayuda'],
                 ['/estado-pedido', 'Estado de mi pedido'],
-                ['#', 'Política de garantía'],
+                ['/garantias', 'Política de garantía'],
                 ['/politica-devoluciones', 'Devoluciones'],
                 ['#', 'Contacto'],
               ].map(([href, label]) => (

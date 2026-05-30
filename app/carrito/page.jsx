@@ -9,7 +9,7 @@ export default function CarritoPage() {
     <div style={{ maxWidth: 520, margin: '0 auto', padding: '80px 32px', textAlign: 'center' }}>
       <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 32, color: 'var(--black)', marginBottom: 12 }}>Tu carrito está vacío</h1>
       <p style={{ color: 'var(--gray-600)', fontSize: 15, marginBottom: 28 }}>Explorá nuestro catálogo y agregá productos.</p>
-      <Link href="/" style={{ background: 'var(--black)', color: '#fff', padding: '13px 28px', borderRadius: 5, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>Ver productos →</Link>
+      <Link href="/productos" style={{ background: 'var(--black)', color: '#fff', padding: '13px 28px', borderRadius: 5, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>Ver productos →</Link>
     </div>
   )
 
@@ -63,7 +63,7 @@ export default function CarritoPage() {
       <a href="/checkout" style={{ display: 'block', background: 'var(--black)', color: '#fff', padding: '14px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 15, textAlign: 'center' }}>
         Proceder al checkout →
       </a>
-      <Link href="/" style={{ display: 'block', textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--gray-400)', textDecoration: 'none' }}>← Seguir comprando</Link>
+      <Link href="/productos" style={{ display: 'block', textAlign: 'center', marginTop: 12, fontSize: 13, color: 'var(--gray-400)', textDecoration: 'none' }}>← Seguir comprando</Link>
     </div>
   )
 }

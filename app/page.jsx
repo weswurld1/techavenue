@@ -175,7 +175,7 @@ export default function HomePage() {
                 ['/estado-pedido', 'Estado de mi pedido'],
                 ['/garantias', 'Política de garantía'],
                 ['/politica-devoluciones', 'Devoluciones'],
-                ['#', 'Contacto'],
+                ['/contacto', 'Contacto'],
               ].map(([href, label]) => (
                 <li key={label}><Link href={href}>{label}</Link></li>
               ))}

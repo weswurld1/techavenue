@@ -1,257 +1,110 @@
 export default function PoliticaDevolucionesPage() {
   return (
-    <>
-      {/* ── HERO ── */}
-      <div style={{
-        background: '#0d0d0d',
-        padding: '80px 32px 72px',
-        textAlign: 'center',
-        borderBottom: '1px solid #1a1a1a',
-      }}>
-        <span style={{
-          display: 'inline-block',
-          background: 'rgba(30,58,138,0.15)',
-          border: '1px solid rgba(30,58,138,0.3)',
-          borderRadius: 4,
-          padding: '5px 14px',
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: '0.1em',
-          textTransform: 'uppercase',
-          color: '#6B8FD4',
-          marginBottom: 24,
-        }}>
-          ← Soporte al cliente
-        </span>
-        <h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 800,
-          fontSize: 'clamp(48px, 7vw, 88px)',
-          lineHeight: 0.9,
-          color: '#ffffff',
-          letterSpacing: '-0.02em',
-          marginBottom: 20,
-        }}>
-          Política de<br />
-          <span style={{ color: '#1E3A8A' }}>Devoluciones</span>
+    <div style={{ maxWidth: 780, margin: '0 auto', padding: '64px 32px 96px' }}>
+
+      <div style={{ marginBottom: 48 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E3A8A', marginBottom: 10 }}>Soporte</div>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(40px, 6vw, 64px)', lineHeight: 0.95, color: 'var(--black)', letterSpacing: '-0.02em', marginBottom: 16 }}>
+          Política de<br />Devoluciones
         </h1>
-        <p style={{
-          fontSize: 16,
-          color: 'rgba(255,255,255,0.45)',
-          maxWidth: 480,
-          margin: '0 auto',
-          lineHeight: 1.7,
-        }}>
-          Queremos que tu compra sea perfecta. Si algo no está bien, acá explicamos cómo te ayudamos.
+        <p style={{ fontSize: 14, color: 'var(--gray-400)', borderTop: '1px solid var(--gray-200)', paddingTop: 16, marginTop: 16 }}>
+          Última actualización: 2026 · techavenuecr.com
         </p>
       </div>
 
-      {/* ── STATS ROW ── */}
-      <div style={{ borderBottom: '1px solid var(--gray-200)' }}>
-        <div style={{
-          maxWidth: 1100,
-          margin: '0 auto',
-          padding: '0 32px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-        }}>
+      {/* Proceso */}
+      <div style={{ marginBottom: 48, paddingBottom: 48, borderBottom: '1px solid var(--gray-200)' }}>
+        <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 22, color: 'var(--black)', letterSpacing: '-0.01em', marginBottom: 20 }}>
+          ¿Cómo funciona?
+        </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
           {[
-            { num: '30',   unit: 'días',    label: 'para solicitar devolución' },
-            { num: '100%', unit: '',         label: 'respaldo en garantías' },
-            { num: '24h',  unit: '',         label: 'respuesta máxima' },
-            { num: '3',    unit: 'canales',  label: 'de contacto disponibles' },
-          ].map((s, i) => (
-            <div key={i} style={{
-              padding: '36px 24px',
-              borderRight: i < 3 ? '1px solid var(--gray-200)' : 'none',
-              textAlign: 'center',
-            }}>
-              <div style={{
-                fontFamily: 'var(--font-display)',
-                fontWeight: 800,
-                fontSize: 44,
-                color: 'var(--black)',
-                lineHeight: 1,
-                letterSpacing: '-0.03em',
-              }}>
-                {s.num}
-                {s.unit && <span style={{ fontSize: 20, color: '#1E3A8A', marginLeft: 2 }}>{s.unit}</span>}
-              </div>
-              <div style={{ fontSize: 12.5, color: 'var(--gray-600)', marginTop: 6, fontWeight: 500 }}>
-                {s.label}
-              </div>
+            { n: '01', t: 'Contactanos',       d: 'Escribinos por WhatsApp o correo dentro de los 30 días.' },
+            { n: '02', t: 'Validación',         d: 'Revisamos tu caso y validamos si aplica para devolución.' },
+            { n: '03', t: 'Envío del producto', d: 'Te indicamos cómo enviar el producto en empaque original.' },
+            { n: '04', t: 'Reembolso',          d: 'Procesamos el reembolso o nota de crédito una vez aprobado.' },
+          ].map((p) => (
+            <div key={p.n} style={{ border: '1px solid var(--gray-200)', borderTop: '3px solid #1E3A8A', borderRadius: 8, padding: '24px 20px', background: 'var(--white)' }}>
+              <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 40, color: 'var(--gray-200)', lineHeight: 1, marginBottom: 12, letterSpacing: '-0.03em' }}>{p.n}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--black)', marginBottom: 6 }}>{p.t}</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.65 }}>{p.d}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── MAIN CONTENT ── */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '72px 32px' }}>
+      {/* No aplica / Reembolsos */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16, marginBottom: 48, paddingBottom: 48, borderBottom: '1px solid var(--gray-200)' }}>
 
-        {/* INFO NOTE */}
-        <div style={{
-          background: 'rgba(30,58,138,0.04)',
-          border: '1px solid rgba(30,58,138,0.15)',
-          borderLeft: '4px solid #1E3A8A',
-          borderRadius: '0 6px 6px 0',
-          padding: '20px 24px',
-          marginBottom: 64,
-          display: 'flex',
-          gap: 16,
-          alignItems: 'flex-start',
-        }}>
-          <p style={{ fontSize: 14, color: '#2a2a2a', lineHeight: 1.7, margin: 0 }}>
-            <strong>¿Dudas antes de comprar?</strong> Nuestro equipo puede ayudarte a verificar compatibilidad entre componentes antes de hacer tu pedido. Contactanos por WhatsApp o correo.
+        <div style={{ border: '1px solid var(--gray-200)', borderRadius: 6, overflow: 'hidden' }}>
+          <div style={{ background: 'var(--black)', padding: '16px 20px' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: '#fff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>No aplica devolución</span>
+          </div>
+          {[
+            'Productos personalizados o por encargo especial',
+            'Software, licencias digitales o códigos activados',
+            'Productos con daños físicos o señales de manipulación',
+            'Productos incompletos o sin empaque original',
+          ].map((item, i, arr) => (
+            <div key={i} style={{ padding: '13px 20px', borderBottom: i < arr.length - 1 ? '1px solid var(--gray-200)' : 'none', display: 'flex', gap: 10, fontSize: 13.5, color: 'var(--gray-800)', lineHeight: 1.5 }}>
+              <span style={{ color: '#DC2626', fontWeight: 700, flexShrink: 0 }}>✕</span>
+              {item}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ border: '1px solid var(--gray-200)', borderRadius: 6, overflow: 'hidden' }}>
+          <div style={{ background: '#1E3A8A', padding: '16px 20px' }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: '#fff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>Reembolsos y notas de crédito</span>
+          </div>
+          {[
+            'Procesamos reembolso o nota de crédito una vez aprobado',
+            'Los tiempos varían según el método de pago utilizado',
+            'Los costos de envío no son reembolsables',
+            'Excepción: error nuestro o garantía aprobada',
+          ].map((item, i, arr) => (
+            <div key={i} style={{ padding: '13px 20px', borderBottom: i < arr.length - 1 ? '1px solid var(--gray-200)' : 'none', display: 'flex', gap: 10, fontSize: 13.5, color: 'var(--gray-800)', lineHeight: 1.5 }}>
+              <span style={{ color: '#1E3A8A', fontWeight: 700, flexShrink: 0 }}>→</span>
+              {item}
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* CTA */}
+      <div style={{ background: '#0d0d0d', borderRadius: 8, padding: '40px 40px', display: 'flex', gap: 40, alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(24px, 3vw, 34px)', color: '#fff', lineHeight: 1.05, letterSpacing: '-0.02em', marginBottom: 8 }}>
+            ¿Necesitás ayuda<br />con tu devolución?
+          </div>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+            Nuestro equipo te acompaña en todo el proceso.
           </p>
         </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
 
-        {/* PROCESO */}
-        <div style={{ marginBottom: 72 }}>
-         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E3A8A', marginBottom: 6 }}>Proceso</div>
-         <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--black)', letterSpacing: '-0.01em', marginBottom: 28 }}>¿Cómo funciona?</div>
-         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
-         {[
-           { n: '01', t: 'Contactanos',       d: 'Escribinos por WhatsApp, correo o formulario dentro de los 30 días.' },
-           { n: '02', t: 'Validación',         d: 'Revisamos tu caso y validamos si aplica para devolución.' },
-           { n: '03', t: 'Envío del producto', d: 'Te indicamos cómo enviar el producto en empaque original y completo.' },
-           { n: '04', t: 'Reembolso',          d: 'Procesamos el reembolso o nota de crédito una vez aprobado.' },
-         ].map((p, i) => (
-      <div key={i} style={{
-        border: '1px solid var(--gray-200)',
-        borderRadius: 8,
-        padding: '32px 24px',
-        background: 'var(--white)',
-        position: 'relative',
-        borderTop: '3px solid #1E3A8A',
-      }}>
-        <div style={{
-          fontFamily: 'var(--font-display)',
-          fontWeight: 800,
-          fontSize: 52,
-          color: 'var(--gray-200)',
-          lineHeight: 1,
-          marginBottom: 16,
-          letterSpacing: '-0.03em',
-        }}>{p.n}</div>
-        <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--black)', marginBottom: 8 }}>{p.t}</div>
-        <div style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.65 }}>{p.d}</div>
+          <a href="https://wa.me/50663409795" target="_blank" rel="noreferrer" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 5, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 10, color: '#fff', fontSize: 13.5, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="#25D366">
+              <path d="M16 0C7.163 0 0 7.163 0 16c0 2.824.738 5.47 2.031 7.772L0 32l8.469-2.219A15.93 15.93 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.32 22.72c-.347.977-2.025 1.867-2.773 1.936-.748.07-1.469.36-4.96-1.036-4.208-1.666-6.896-5.936-7.104-6.208-.208-.272-1.664-2.213-1.664-4.224 0-2.01 1.053-3.002 1.427-3.413.373-.41.813-.513 1.083-.513.27 0 .54.003.776.014.25.012.585-.095.916.699.347.824 1.179 2.84 1.283 3.047.104.207.174.45.035.726-.139.275-.208.446-.416.687-.207.24-.437.537-.624.721-.208.204-.424.424-.183.833.241.41 1.072 1.765 2.302 2.86 1.582 1.41 2.914 1.848 3.323 2.057.41.208.649.174.89-.104.24-.277.997-1.162 1.264-1.56.267-.4.534-.333.9-.2.366.133 2.338 1.102 2.738 1.302.4.2.665.3.765.467.1.167.1.958-.247 1.91z"/>
+            </svg>
+            WhatsApp
+          </a>
+
+          <a href="mailto:ventas@techavenuecr.com" style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 5, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 10, color: '#fff', fontSize: 13.5, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+            Correo electrónico
+          </a>
+
+        </div>
       </div>
-    ))}
-  </div>
-</div>
 
-        {/* DOS COLUMNAS */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 72 }}>
-
-          {/* No aplica */}
-          <div style={{ border: '1px solid var(--gray-200)', borderRadius: 6, overflow: 'hidden' }}>
-            <div style={{ background: 'var(--black)', padding: '18px 22px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: '#fff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>✕ No aplica devolución</span>
-            </div>
-            {[
-              'Productos personalizados o por encargo especial',
-              'Software, licencias digitales o códigos activados',
-              'Productos con daños físicos o señales de manipulación',
-              'Productos incompletos o sin empaque original',
-            ].map((item, i) => (
-              <div key={i} style={{ padding: '14px 22px', borderBottom: i < 3 ? '1px solid var(--gray-200)' : 'none', display: 'flex', gap: 12, fontSize: 13.5, color: 'var(--gray-800)', lineHeight: 1.5 }}>
-                <span style={{ color: '#dc2626', fontWeight: 700, flexShrink: 0 }}>✕</span>
-                {item}
-              </div>
-            ))}
-          </div>
-
-          {/* Reembolsos */}
-          <div style={{ border: '1px solid var(--gray-200)', borderRadius: 6, overflow: 'hidden' }}>
-            <div style={{ background: '#1E3A8A', padding: '18px 22px', display: 'flex', alignItems: 'center', gap: 10 }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 15, color: '#fff', letterSpacing: '0.04em', textTransform: 'uppercase' }}>→ Reembolsos y notas de crédito</span>
-            </div>
-            {[
-              'Procesamos reembolso o nota de crédito una vez aprobado',
-              'Los tiempos varían según el método de pago utilizado',
-              'Los costos de envío no son reembolsables',
-              'Excepción: error nuestro o garantía aprobada',
-            ].map((item, i) => (
-              <div key={i} style={{ padding: '14px 22px', borderBottom: i < 3 ? '1px solid var(--gray-200)' : 'none', display: 'flex', gap: 12, fontSize: 13.5, color: 'var(--gray-800)', lineHeight: 1.5 }}>
-                <span style={{ color: '#1E3A8A', fontWeight: 700, flexShrink: 0 }}>→</span>
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* TIEMPOS */}
-        <div style={{ marginBottom: 72 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E3A8A', marginBottom: 6 }}>Logística</div>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(26px, 3vw, 36px)', color: 'var(--black)', letterSpacing: '-0.01em', marginBottom: 28 }}>Tiempos de procesamiento</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-            {[
-              { title: 'Antes de 5:30 p.m.',    desc: 'Pedidos confirmados antes de esa hora se procesan el mismo día hábil.',  dot: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' },
-              { title: 'Después de 5:30 p.m.',  desc: 'Se procesan el siguiente día hábil.',                                     dot: '#d97706', bg: '#fffbeb', border: '#fde68a' },
-              { title: 'Sábado o Domingo',       desc: 'Pedidos del fin de semana se procesan el Lunes.',                        dot: '#6b6b6b', bg: 'var(--gray-100)', border: 'var(--gray-200)' },
-            ].map((t, i) => (
-              <div key={i} style={{ background: t.bg, border: `1px solid ${t.border}`, borderRadius: 6, padding: '28px 24px' }}>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: t.dot, marginBottom: 14 }} />
-                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 18, color: 'var(--black)', marginBottom: 8, letterSpacing: '-0.01em' }}>{t.title}</div>
-                <div style={{ fontSize: 13.5, color: 'var(--gray-600)', lineHeight: 1.65 }}>{t.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* CONTACT CTA */}
-<div style={{
-  background: '#0d0d0d',
-  borderRadius: 8,
-  padding: '52px 48px',
-  display: 'grid',
-  gridTemplateColumns: '1fr auto',
-  gap: 40,
-  alignItems: 'center',
-}}>
-  <div>
-    <div style={{
-      fontFamily: 'var(--font-display)',
-      fontWeight: 800,
-      fontSize: 'clamp(28px, 3.5vw, 42px)',
-      color: '#ffffff',
-      lineHeight: 1,
-      letterSpacing: '-0.02em',
-      marginBottom: 12,
-    }}>
-      ¿Necesitás ayuda<br />con tu devolución?
-    </div>
-    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', margin: 0 }}>
-      Nuestro equipo está disponible para acompañarte en todo el proceso.
-    </p>
-  </div>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
-    {[
-      { label: '💬 WhatsApp',              href: 'https://wa.me/TUNUMERO' },
-      { label: '✉ Correo electrónico',     href: 'mailto:info@techavenue.com' },
-      { label: '📋 Formulario de contacto', href: '/contacto' },
-    ].map((c) => (
-      <a key={c.label} href={c.href} style={{
-        background: 'rgba(255,255,255,0.08)',
-        border: '1px solid rgba(255,255,255,0.15)',
-        borderRadius: 5,
-        padding: '12px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        gap: 10,
-        color: '#ffffff',
-        fontSize: 13.5,
-        fontWeight: 600,
-        whiteSpace: 'nowrap',
-        textDecoration: 'none',
-      }}>
-        {c.label}
+      <a href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--black)', color: 'var(--white)', padding: '12px 24px', borderRadius: 5, fontWeight: 600, fontSize: 14, textDecoration: 'none', marginTop: 40 }}>
+        ← Volver al inicio
       </a>
-    ))}
-  </div>
-</div>
 
-      </div>
-    </>
+    </div>
   )
 }

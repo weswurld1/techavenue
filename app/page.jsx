@@ -4,10 +4,8 @@ import Link from 'next/link'
 export default function HomePage() {
   return (
     <>
-      {/* HERO */}
       <div className="hero">
         <div className="hero-left">
-          <span className="hero-badge">Nuevos lanzamientos 2025</span>
           <h1 className="hero-title">
             Construye<br />
             tu setup<br />
@@ -16,31 +14,28 @@ export default function HomePage() {
           <p className="hero-sub">
             Componentes, periféricos y todo lo que necesitas para armar el PC de tus sueños. Stock real, precios directos.
           </p>
-          <div className="hero-actions">
-            <button className="btn-primary">Ver catálogo completo</button>
-            <button className="btn-outline">Ver ofertas</button>
-          </div>
         </div>
         <div className="hero-right">
-          <div className="hero-product-visual">
-            <div className="gpu-shape">
-              <div className="gpu-accent"></div>
-              <div className="gpu-fans">
-                <div className="fan"></div>
-                <div className="fan"></div>
-                <div className="fan"></div>
-              </div>
-            </div>
-            <div className="hero-product-label">
-              <span>Destacado</span>
-              <strong>RTX 4070 Super · 12GB GDDR6X</strong>
-            </div>
-            <span className="hero-tag">En stock</span>
+          <div style={{
+            width: '100%',
+            maxWidth: 460,
+            aspectRatio: '4/3',
+            background: 'var(--gray-100)',
+            borderRadius: 4,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 12,
+            color: 'var(--gray-400)',
+            fontWeight: 500,
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase',
+          }}>
+            Animación 3D aquí
           </div>
         </div>
       </div>
 
-      {/* CATEGORIES */}
       <section className="categories-section">
         <div className="section-header">
           <div>
@@ -64,7 +59,6 @@ export default function HomePage() {
           ].map((cat) => (
             <Link href={cat.href} className="category-card" key={cat.href}>
               <div className="category-img-wrap">
-                {/* <img src={cat.img} alt={cat.label} /> */}
                 <div className="category-img-placeholder">foto aquí</div>
               </div>
               <div className="category-body">
@@ -76,10 +70,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS — SLIDESHOW */}
       <Slideshow />
 
-      {/* BANNER */}
       <div style={{background:'var(--black)', padding:0}}>
         <div className="banner-strip">
           <div className="banner-strip-inner">
@@ -92,7 +84,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* BRANDS */}
       <section style={{ borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)', padding: '20px 0', overflow: 'hidden', background: 'var(--white)' }}>
         <div style={{
           display: 'flex',
@@ -102,31 +93,30 @@ export default function HomePage() {
           gap: 64,
         }}>
           {[
-            { src: '/images/marcas/nvidia-logo.png',                    alt: 'NVIDIA' },
-            { src: '/images/marcas/amd-logo-black-and-white-1.png',     alt: 'AMD' },
-            { src: '/images/marcas/intel-logo-1.png',                   alt: 'Intel' },
-            { src: '/images/marcas/corsair-logo.png',                   alt: 'Corsair' },
-            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png',alt: 'Gigabyte' },
-            { src: '/images/marcas/msi-logo-black-and-white.png',       alt: 'MSI' },
-            { src: '/images/marcas/cooler-master-logo.png',             alt: 'Cooler Master' },
-            { src: '/images/marcas/kingston-logo-2.png',                alt: 'Kingston' },
-            { src: '/images/marcas/evga-logo-black-and-white.png',      alt: 'EVGA' },
-            { src: '/images/marcas/nvidia-logo.png',                    alt: 'NVIDIA2' },
-            { src: '/images/marcas/amd-logo-black-and-white-1.png',     alt: 'AMD2' },
-            { src: '/images/marcas/intel-logo-1.png',                   alt: 'Intel2' },
-            { src: '/images/marcas/corsair-logo.png',                   alt: 'Corsair2' },
-            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png',alt: 'Gigabyte2' },
-            { src: '/images/marcas/msi-logo-black-and-white.png',       alt: 'MSI2' },
-            { src: '/images/marcas/cooler-master-logo.png',             alt: 'Cooler Master2' },
-            { src: '/images/marcas/kingston-logo-2.png',                alt: 'Kingston2' },
-            { src: '/images/marcas/evga-logo-black-and-white.png',      alt: 'EVGA2' },
+            { src: '/images/marcas/nvidia-logo.png',                     alt: 'NVIDIA' },
+            { src: '/images/marcas/amd-logo-black-and-white-1.png',      alt: 'AMD' },
+            { src: '/images/marcas/intel-logo-1.png',                    alt: 'Intel' },
+            { src: '/images/marcas/corsair-logo.png',                    alt: 'Corsair' },
+            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png', alt: 'Gigabyte' },
+            { src: '/images/marcas/msi-logo-black-and-white.png',        alt: 'MSI' },
+            { src: '/images/marcas/cooler-master-logo.png',              alt: 'Cooler Master' },
+            { src: '/images/marcas/kingston-logo-2.png',                 alt: 'Kingston' },
+            { src: '/images/marcas/evga-logo-black-and-white.png',       alt: 'EVGA' },
+            { src: '/images/marcas/nvidia-logo.png',                     alt: 'NVIDIA2' },
+            { src: '/images/marcas/amd-logo-black-and-white-1.png',      alt: 'AMD2' },
+            { src: '/images/marcas/intel-logo-1.png',                    alt: 'Intel2' },
+            { src: '/images/marcas/corsair-logo.png',                    alt: 'Corsair2' },
+            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png', alt: 'Gigabyte2' },
+            { src: '/images/marcas/msi-logo-black-and-white.png',        alt: 'MSI2' },
+            { src: '/images/marcas/cooler-master-logo.png',              alt: 'Cooler Master2' },
+            { src: '/images/marcas/kingston-logo-2.png',                 alt: 'Kingston2' },
+            { src: '/images/marcas/evga-logo-black-and-white.png',       alt: 'EVGA2' },
           ].map(b => (
             <img key={b.alt} src={b.src} alt={b.alt} style={{ height: 30, objectFit: 'contain', flexShrink: 0 }} />
           ))}
         </div>
       </section>
 
-      {/* WHY US */}
       <section className="why-section">
         <div className="why-inner">
           <div className="section-header">
@@ -152,7 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer>
         <div className="footer-top">
           <div className="footer-brand">
@@ -226,7 +215,6 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* WHATSAPP BUBBLE */}
       <div className="wa-bubble">
         <span className="wa-tooltip">¿Necesitás ayuda?</span>
         <a href="https://wa.me/50663409795" className="wa-btn" aria-label="Contactar por WhatsApp" target="_blank" rel="noreferrer">

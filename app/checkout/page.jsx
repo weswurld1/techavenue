@@ -1,14 +1,11 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-const productosEjemplo = [
-  { id: 1, nombre: 'GeForce RTX 4070 Super', marca: 'NVIDIA', precio: 329000, cantidad: 1 },
-  { id: 2, nombre: 'Ryzen 9 7900X', marca: 'AMD', precio: 199000, cantidad: 1 },
-]
+import { useCarrito } from '../../context/CartContext'
 
 export default function CheckoutPage() {
   const router = useRouter()
+  const { items, vaciar } = useCarrito()
   const [form, setForm] = useState({
     nombre: '', apellido: '', provincia: '', canton: '',
     direccion: '', telefono: '', correo: '', notas: ''
@@ -17,8 +14,7 @@ export default function CheckoutPage() {
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
 
-  const productos = productosEjemplo
-  const subtotal = productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0)
+  const subtotal = items.reduce((acc, p) => acc + p.precio * p.cantidad, 0)
   const descuento = metodoPago === 'anticipado' ? Math.round(subtotal * 0.03) : 0
   const envio = metodoPago === 'anticipado' ? 0 : 3000
   const total = subtotal - descuento + envio
@@ -41,6 +37,10 @@ export default function CheckoutPage() {
   const fieldStyle = { marginBottom: 14 }
 
   const handleSubmit = async () => {
+    if (items.length === 0) {
+      setError('Tu carrito está vacío.')
+      return
+    }
     const requeridos = ['nombre', 'apellido', 'provincia', 'canton', 'direccion', 'telefono', 'correo']
     for (const campo of requeridos) {
       if (!form[campo].trim()) {
@@ -54,10 +54,11 @@ export default function CheckoutPage() {
       const res = await fetch('/api/pedidos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, productos, total, metodoPago, descuento, envio })
+        body: JSON.stringify({ ...form, productos: items, total, metodoPago, descuento, envio })
       })
       const data = await res.json()
       if (data.success) {
+        vaciar()
         router.push('/orden-confirmada?orden=' + data.numeroOrden + '&total=' + total + '&nombre=' + form.nombre)
       } else {
         setError('Hubo un error al procesar tu pedido. Intentá de nuevo.')
@@ -69,6 +70,14 @@ export default function CheckoutPage() {
     }
   }
 
+  if (items.length === 0) return (
+    <div style={{ maxWidth: 520, margin: '0 auto', padding: '80px 32px', textAlign: 'center' }}>
+      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 32, color: 'var(--black)', marginBottom: 12 }}>Tu carrito está vacío</h1>
+      <p style={{ color: 'var(--gray-600)', fontSize: 15, marginBottom: 28 }}>Agregá productos antes de proceder al checkout.</p>
+      <a href="/" style={{ background: 'var(--black)', color: '#fff', padding: '13px 28px', borderRadius: 5, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>Ver productos →</a>
+    </div>
+  )
+
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '56px 32px 96px' }}>
       <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(32px, 5vw, 48px)', color: 'var(--black)', letterSpacing: '-0.02em', marginBottom: 40 }}>
@@ -77,7 +86,6 @@ export default function CheckoutPage() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)', gap: 40 }}>
 
-        {/* COLUMNA IZQUIERDA */}
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
             Datos de entrega
@@ -131,7 +139,6 @@ export default function CheckoutPage() {
             <textarea style={{ ...inputStyle, height: 80, resize: 'vertical' }} value={form.notas} onChange={e => set('notas', e.target.value)} placeholder="Instrucciones especiales de entrega..." />
           </div>
 
-          {/* TIEMPOS DE PROCESAMIENTO */}
           <div style={{ marginTop: 8, padding: '14px 16px', background: 'var(--gray-100)', borderRadius: 8, fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.6 }}>
             <div style={{ fontWeight: 700, color: 'var(--black)', marginBottom: 8, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.07em' }}>Tiempos de procesamiento</div>
             <div style={{ marginBottom: 4 }}><strong style={{ color: 'var(--black)' }}>Antes de las 5:30 p.m.</strong> — Pedidos confirmados antes de esa hora se procesan el mismo día hábil.</div>
@@ -146,16 +153,17 @@ export default function CheckoutPage() {
           )}
         </div>
 
-        {/* COLUMNA DERECHA */}
         <div>
           <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 16, paddingBottom: 10, borderBottom: '1px solid var(--gray-200)' }}>
             Resumen del pedido
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            {productos.map(p => (
+            {items.map(p => (
               <div key={p.id} style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
-                <div style={{ width: 44, height: 44, background: 'var(--gray-100)', borderRadius: 6, flexShrink: 0 }} />
+                <div style={{ width: 44, height: 44, background: 'var(--gray-100)', borderRadius: 6, flexShrink: 0, overflow: 'hidden' }}>
+                  {p.imagen && <img src={p.imagen} alt={p.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />}
+                </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--black)' }}>{p.nombre}</div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>{p.marca} x{p.cantidad}</div>
@@ -190,7 +198,6 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* MÉTODO DE PAGO */}
           <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--black)', marginBottom: 12 }}>
             Método de pago
           </div>

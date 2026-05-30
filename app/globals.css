@@ -830,3 +830,8 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   pointer-events: none;
 }
 .wa-bubble:hover .wa-tooltip { opacity: 1; transform: translateY(0); }
+
+@keyframes marquee-brands {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}

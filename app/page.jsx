@@ -85,34 +85,23 @@ export default function HomePage() {
       </div>
 
       <section style={{ borderTop: '1px solid var(--gray-200)', borderBottom: '1px solid var(--gray-200)', padding: '20px 0', overflow: 'hidden', background: 'var(--white)' }}>
-        <div style={{
-          display: 'flex',
-          animation: 'marquee-brands 25s linear infinite',
-          width: 'max-content',
-          alignItems: 'center',
-          gap: 64,
-        }}>
-          {[
-            { src: '/images/marcas/nvidia-logo.png',                     alt: 'NVIDIA' },
-            { src: '/images/marcas/amd-logo-black-and-white-1.png',      alt: 'AMD' },
-            { src: '/images/marcas/intel-logo-1.png',                    alt: 'Intel' },
-            { src: '/images/marcas/corsair-logo.png',                    alt: 'Corsair' },
-            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png', alt: 'Gigabyte' },
-            { src: '/images/marcas/msi-logo-black-and-white.png',        alt: 'MSI' },
-            { src: '/images/marcas/cooler-master-logo.png',              alt: 'Cooler Master' },
-            { src: '/images/marcas/kingston-logo-2.png',                 alt: 'Kingston' },
-            { src: '/images/marcas/evga-logo-black-and-white.png',       alt: 'EVGA' },
-            { src: '/images/marcas/nvidia-logo.png',                     alt: 'NVIDIA2' },
-            { src: '/images/marcas/amd-logo-black-and-white-1.png',      alt: 'AMD2' },
-            { src: '/images/marcas/intel-logo-1.png',                    alt: 'Intel2' },
-            { src: '/images/marcas/corsair-logo.png',                    alt: 'Corsair2' },
-            { src: '/images/marcas/gigabyte-logo-black-and-white-1.png', alt: 'Gigabyte2' },
-            { src: '/images/marcas/msi-logo-black-and-white.png',        alt: 'MSI2' },
-            { src: '/images/marcas/cooler-master-logo.png',              alt: 'Cooler Master2' },
-            { src: '/images/marcas/kingston-logo-2.png',                 alt: 'Kingston2' },
-            { src: '/images/marcas/evga-logo-black-and-white.png',       alt: 'EVGA2' },
-          ].map(b => (
-            <img key={b.alt} src={b.src} alt={b.alt} style={{ height: 30, objectFit: 'contain', flexShrink: 0 }} />
+        <div style={{ display: 'flex', animation: 'marquee-brands 25s linear infinite', willChange: 'transform' }}>
+          {[0, 1].map(i => (
+            <div key={i} aria-hidden={i === 1 ? 'true' : undefined} style={{ display: 'flex', alignItems: 'center', gap: 64, paddingRight: 64, flexShrink: 0 }}>
+              {[
+                { src: '/images/marcas/nvidia-logo.png',                     alt: 'NVIDIA' },
+                { src: '/images/marcas/amd-logo-black-and-white-1.png',      alt: 'AMD' },
+                { src: '/images/marcas/intel-logo-1.png',                    alt: 'Intel' },
+                { src: '/images/marcas/corsair-logo.png',                    alt: 'Corsair' },
+                { src: '/images/marcas/gigabyte-logo-black-and-white-1.png', alt: 'Gigabyte' },
+                { src: '/images/marcas/msi-logo-black-and-white.png',        alt: 'MSI' },
+                { src: '/images/marcas/cooler-master-logo.png',              alt: 'Cooler Master' },
+                { src: '/images/marcas/kingston-logo-2.png',                 alt: 'Kingston' },
+                { src: '/images/marcas/evga-logo-black-and-white.png',       alt: 'EVGA' },
+              ].map(b => (
+                <img key={b.alt} src={b.src} alt={b.alt} style={{ height: 30, objectFit: 'contain', flexShrink: 0 }} />
+              ))}
+            </div>
           ))}
         </div>
       </section>

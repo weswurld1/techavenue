@@ -35,7 +35,7 @@ export default function CategoryModel({ url, rotation = [0, 0, 0] }) {
       camera={{ position: [0, 0, 5], fov: 45 }}
       gl={{ antialias: true }}
       dpr={[1, 1.5]}
-      frameloop="demand"
+      frameloop="always"
       flat
     >
       <color attach="background" args={['#ffffff']} />

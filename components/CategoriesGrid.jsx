@@ -1,6 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useGLTF } from '@react-three/drei'
 
 const CategoryModel = dynamic(() => import('./CategoryModel'), { ssr: false })
 
@@ -8,9 +9,9 @@ const H = Math.PI / 2
 
 const CATEGORIES = [
   { href: '/categoria/gpu',            label: 'Tarjetas Gráficas', model: '/models/gpu.glb' },
-  { href: '/categoria/cpu',            label: 'Procesadores',      model: '/models/cpu.glb',          rotation: [-H, 0, Math.PI] },
-  { href: '/categoria/placas-madre',   label: 'Placas Madre',      model: '/models/motherboard.glb',  rotation: [H, 0, 0] },
-  { href: '/categoria/ram',            label: 'Memoria RAM',       model: '/models/ram.glb' },
+  { href: '/categoria/cpu',            label: 'Procesadores',      model: '/models/cpu.glb',           rotation: [-H, 0, Math.PI] },
+  { href: '/categoria/placas-madre',   label: 'Placas Madre',      model: '/models/motherboard.glb',   rotation: [H, 0, 0] },
+  { href: '/categoria/ram',            label: 'Memoria RAM',        model: '/models/ram.glb' },
   { href: '/categoria/almacenamiento', label: 'Almacenamiento',    model: '/models/almacenamiento.glb', rotation: [-H, 0, 0] },
   { href: '/categoria/refrigeracion',  label: 'Refrigeración',     model: '/models/cooling.glb' },
   { href: '/categoria/perifericos',    label: 'Periféricos',       model: '/models/perifericos.glb' },
@@ -18,6 +19,10 @@ const CATEGORIES = [
   { href: '/categoria/psu',            label: 'Fuentes de Poder',  model: '/models/fuentedepoder.glb' },
   { href: '/categoria/redes',          label: 'Redes',             model: '/models/redes.glb' },
 ]
+
+if (typeof window !== 'undefined') {
+  CATEGORIES.forEach(c => useGLTF.preload(c.model))
+}
 
 export default function CategoriesGrid() {
   return (

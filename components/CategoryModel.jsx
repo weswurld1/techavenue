@@ -3,6 +3,8 @@ import { Suspense, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Center, Bounds } from '@react-three/drei'
 
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
+
 function PauseOnScroll() {
   const controls = useThree(s => s.controls)
   useEffect(() => {

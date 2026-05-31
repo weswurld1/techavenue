@@ -1,5 +1,21 @@
 import Slideshow from '@/components/Slideshow'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+const CategoryModel = dynamic(() => import('@/components/CategoryModel'), { ssr: false })
+
+const CATEGORIES = [
+  { href: '/categoria/gpu',            label: 'Tarjetas Gráficas', model: '/models/gpu.glb' },
+  { href: '/categoria/cpu',            label: 'Procesadores',      model: '/models/cpu.glb' },
+  { href: '/categoria/placas-madre',   label: 'Placas Madre',      model: '/models/motherboard.glb' },
+  { href: '/categoria/ram',            label: 'Memoria RAM',       model: '/models/ram.glb' },
+  { href: '/categoria/almacenamiento', label: 'Almacenamiento',    model: '/models/almacenamiento.glb' },
+  { href: '/categoria/refrigeracion',  label: 'Refrigeración',     model: '/models/cooling.glb' },
+  { href: '/categoria/perifericos',    label: 'Periféricos',       model: '/models/perifericos.glb' },
+  { href: '/categoria/gabinetes',      label: 'Gabinetes',         model: '/models/pccase.glb' },
+  { href: '/categoria/psu',            label: 'Fuentes de Poder',  model: '/models/fuentedepoder.glb' },
+  { href: '/categoria/redes',          label: 'Redes',             model: '/models/redes.glb' },
+]
 
 export default function HomePage() {
   return (
@@ -45,21 +61,10 @@ export default function HomePage() {
           <Link href="/productos" className="section-link">Ver todo el catálogo →</Link>
         </div>
         <div className="categories-grid">
-          {[
-            { href: '/categoria/gpu',            label: 'Tarjetas Gráficas', img: '/images/categorias/gpu.png' },
-            { href: '/categoria/cpu',             label: 'Procesadores',      img: '/images/categorias/cpu.png' },
-            { href: '/categoria/placas-madre',    label: 'Placas Madre',      img: '/images/categorias/motherboard.png' },
-            { href: '/categoria/ram',             label: 'Memoria RAM',       img: '/images/categorias/ram.png' },
-            { href: '/categoria/almacenamiento',  label: 'Almacenamiento',    img: '/images/categorias/ssd.png' },
-            { href: '/categoria/refrigeracion',   label: 'Refrigeración',     img: '/images/categorias/cooling.png' },
-            { href: '/categoria/perifericos',     label: 'Periféricos',       img: '/images/categorias/perifericos.png' },
-            { href: '/categoria/gabinetes',       label: 'Gabinetes',         img: '/images/categorias/gabinete.png' },
-            { href: '/categoria/psu',             label: 'Fuentes de Poder',  img: '/images/categorias/psu.png' },
-            { href: '/categoria/redes',           label: 'Redes',             img: '/images/categorias/redes.png' },
-          ].map((cat) => (
+          {CATEGORIES.map((cat) => (
             <Link href={cat.href} className="category-card" key={cat.href}>
-              <div className="category-img-wrap">
-                <div className="category-img-placeholder">foto aquí</div>
+              <div className="category-img-wrap" style={{ padding: 0 }}>
+                <CategoryModel url={cat.model} />
               </div>
               <div className="category-body">
                 <span className="category-name"><em>//</em> {cat.label}</span>

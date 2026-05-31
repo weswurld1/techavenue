@@ -3,16 +3,16 @@ import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Center, Bounds, Environment } from '@react-three/drei'
 
-function Model({ url }) {
+function Model({ url, rotation }) {
   const { scene } = useGLTF(url)
   return (
     <Center>
-      <primitive object={scene} />
+      <primitive object={scene} rotation={rotation} />
     </Center>
   )
 }
 
-export default function CategoryModel({ url }) {
+export default function CategoryModel({ url, rotation = [0, 0, 0] }) {
   return (
     <Canvas
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
@@ -33,7 +33,7 @@ export default function CategoryModel({ url }) {
       />
       <Suspense fallback={null}>
         <Bounds fit clip observe margin={1.4}>
-          <Model url={url} />
+          <Model url={url} rotation={rotation} />
         </Bounds>
         <Environment preset="city" />
       </Suspense>

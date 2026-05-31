@@ -8,7 +8,7 @@ const H = Math.PI / 2
 
 const CATEGORIES = [
   { href: '/categoria/gpu',            label: 'Tarjetas Gráficas', model: '/models/gpu.glb' },
-  { href: '/categoria/cpu',            label: 'Procesadores',      model: '/models/cpu.glb',          rotation: [-H, 0, 0] },
+  { href: '/categoria/cpu',            label: 'Procesadores',      model: '/models/cpu.glb',          rotation: [-H, 0, Math.PI] },
   { href: '/categoria/placas-madre',   label: 'Placas Madre',      model: '/models/motherboard.glb',  rotation: [-H, 0, 0] },
   { href: '/categoria/ram',            label: 'Memoria RAM',       model: '/models/ram.glb' },
   { href: '/categoria/almacenamiento', label: 'Almacenamiento',    model: '/models/almacenamiento.glb', rotation: [-H, 0, 0] },

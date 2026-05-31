@@ -1,14 +1,37 @@
 'use client'
-import { Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { useGLTF, OrbitControls, Center, Bounds } from '@react-three/drei'
+import { Suspense, useRef } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { useGLTF, Center, Bounds } from '@react-three/drei'
 
-function Model({ url, rotation }) {
+// Module-level scroll tracker shared across all 10 instances
+let isScrolling = false
+let scrollTimer = null
+if (typeof window !== 'undefined') {
+  window.addEventListener('scroll', () => {
+    isScrolling = true
+    clearTimeout(scrollTimer)
+    scrollTimer = setTimeout(() => { isScrolling = false }, 200)
+  }, { passive: true })
+}
+
+function Scene({ url, rotation }) {
   const { scene } = useGLTF(url)
+  const groupRef = useRef()
+
+  useFrame((_, delta) => {
+    if (!isScrolling && groupRef.current) {
+      groupRef.current.rotation.y += delta * 1.5
+    }
+  })
+
   return (
-    <Center>
-      <primitive object={scene} rotation={rotation} />
-    </Center>
+    <Bounds fit clip margin={1.4}>
+      <Center>
+        <group ref={groupRef}>
+          <primitive object={scene} rotation={rotation} />
+        </group>
+      </Center>
+    </Bounds>
   )
 }
 
@@ -26,18 +49,8 @@ export default function CategoryModel({ url, rotation = [0, 0, 0] }) {
       <directionalLight position={[5, 5, 5]} intensity={2} />
       <directionalLight position={[-3, 3, -3]} intensity={0.8} />
       <directionalLight position={[0, -5, 0]} intensity={0.3} />
-      <OrbitControls
-        makeDefault
-        autoRotate
-        autoRotateSpeed={2}
-        enableZoom={false}
-        enablePan={false}
-        enableRotate={false}
-      />
       <Suspense fallback={null}>
-        <Bounds fit clip observe margin={1.4}>
-          <Model url={url} rotation={rotation} />
-        </Bounds>
+        <Scene url={url} rotation={rotation} />
       </Suspense>
     </Canvas>
   )

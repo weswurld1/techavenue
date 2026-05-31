@@ -2,6 +2,7 @@ import './globals.css'
 import Navbar from '../components/Navbar'
 import Providers from '../components/Providers'
 import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/next'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
             {children}
           </Suspense>
         </Providers>
+        <Analytics />
       </body>
     </html>
   )

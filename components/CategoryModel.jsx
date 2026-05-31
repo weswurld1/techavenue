@@ -1,37 +1,30 @@
 'use client'
-import { Suspense, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Center, Bounds } from '@react-three/drei'
+import { Suspense, useEffect } from 'react'
+import { Canvas, useThree } from '@react-three/fiber'
+import { useGLTF, OrbitControls, Center, Bounds } from '@react-three/drei'
 
-// Module-level scroll tracker shared across all 10 instances
-let isScrolling = false
-let scrollTimer = null
-if (typeof window !== 'undefined') {
-  window.addEventListener('scroll', () => {
-    isScrolling = true
-    clearTimeout(scrollTimer)
-    scrollTimer = setTimeout(() => { isScrolling = false }, 200)
-  }, { passive: true })
+function PauseOnScroll() {
+  const controls = useThree(s => s.controls)
+  useEffect(() => {
+    if (!controls) return
+    let timer
+    const onScroll = () => {
+      controls.autoRotate = false
+      clearTimeout(timer)
+      timer = setTimeout(() => { controls.autoRotate = true }, 250)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(timer) }
+  }, [controls])
+  return null
 }
 
-function Scene({ url, rotation }) {
+function Model({ url, rotation }) {
   const { scene } = useGLTF(url)
-  const groupRef = useRef()
-
-  useFrame((_, delta) => {
-    if (!isScrolling && groupRef.current) {
-      groupRef.current.rotation.y += delta * 1.5
-    }
-  })
-
   return (
-    <Bounds fit clip margin={1.4}>
-      <Center>
-        <group ref={groupRef}>
-          <primitive object={scene} rotation={rotation} />
-        </group>
-      </Center>
-    </Bounds>
+    <Center>
+      <primitive object={scene} rotation={rotation} />
+    </Center>
   )
 }
 
@@ -42,6 +35,7 @@ export default function CategoryModel({ url, rotation = [0, 0, 0] }) {
       camera={{ position: [0, 0, 5], fov: 45 }}
       gl={{ antialias: true }}
       dpr={[1, 1.5]}
+      frameloop="demand"
       flat
     >
       <color attach="background" args={['#ffffff']} />
@@ -49,8 +43,19 @@ export default function CategoryModel({ url, rotation = [0, 0, 0] }) {
       <directionalLight position={[5, 5, 5]} intensity={2} />
       <directionalLight position={[-3, 3, -3]} intensity={0.8} />
       <directionalLight position={[0, -5, 0]} intensity={0.3} />
+      <OrbitControls
+        makeDefault
+        autoRotate
+        autoRotateSpeed={2}
+        enableZoom={false}
+        enablePan={false}
+        enableRotate={false}
+      />
+      <PauseOnScroll />
       <Suspense fallback={null}>
-        <Scene url={url} rotation={rotation} />
+        <Bounds fit clip margin={1.4}>
+          <Model url={url} rotation={rotation} />
+        </Bounds>
       </Suspense>
     </Canvas>
   )

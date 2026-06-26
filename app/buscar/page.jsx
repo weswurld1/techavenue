@@ -1,6 +1,8 @@
 'use client'
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useCatalogo } from '@/context/CatalogoContext'
 
 function SkeletonCard() {
   return (
@@ -19,11 +21,22 @@ function SkeletonCard() {
 function BuscarContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const inputRef = useRef(null)
   const query = searchParams.get('q') || ''
   const [valor, setValor] = useState(query)
+  const { productos, loading } = useCatalogo()
 
   useEffect(() => { setValor(query) }, [query])
+
+  const resultados = useMemo(() => {
+    if (!query.trim() || loading) return []
+    const q = query.toLowerCase()
+    return productos.filter(p =>
+      p.nombre?.toLowerCase().includes(q) ||
+      p.marca?.toLowerCase().includes(q) ||
+      p.subcategoria_original?.toLowerCase().includes(q) ||
+      p.partNumber?.toLowerCase().includes(q)
+    )
+  }, [query, productos, loading])
 
   const handleBuscar = () => {
     if (valor.trim()) router.push('/buscar?q=' + encodeURIComponent(valor.trim()))
@@ -47,7 +60,6 @@ function BuscarContent() {
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input
-              ref={inputRef}
               value={valor}
               onChange={e => setValor(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleBuscar() }}
@@ -70,10 +82,7 @@ function BuscarContent() {
               background: 'var(--black)', color: '#fff', border: 'none',
               borderRadius: 8, padding: '0 24px', fontWeight: 600, fontSize: 14,
               cursor: 'pointer', fontFamily: 'var(--font-body)', whiteSpace: 'nowrap',
-              transition: 'opacity 0.15s',
             }}
-            onMouseOver={e => e.currentTarget.style.opacity = '0.8'}
-            onMouseOut={e => e.currentTarget.style.opacity = '1'}
           >
             Buscar →
           </button>
@@ -81,14 +90,59 @@ function BuscarContent() {
       </div>
 
       {query ? (
-        <div>
-          <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }}>
-            Conectando catálogo — los resultados aparecerán aquí pronto.
+        loading ? (
+          <div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }}>Cargando catálogo...</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+              {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+            </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
-            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+        ) : resultados.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--gray-400)' }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--black)', marginBottom: 8 }}>Sin resultados para "{query}"</div>
+            <div style={{ fontSize: 14 }}>Intentá con otro término, marca o categoría.</div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }}>
+              {resultados.length} producto{resultados.length !== 1 ? 's' : ''} encontrado{resultados.length !== 1 ? 's' : ''}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+              {resultados.map(p => (
+                <Link key={p.id} href={`/producto/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div
+                    style={{ border: '1.5px solid var(--gray-200)', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border-color 0.15s, box-shadow 0.15s' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--black)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)' }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--gray-200)'; e.currentTarget.style.boxShadow = 'none' }}
+                  >
+                    {p.en_oferta && (
+                      <div style={{ position: 'absolute', top: 10, left: 10, background: '#DC2626', color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, zIndex: 1 }}>
+                        Oferta
+                      </div>
+                    )}
+                    <div style={{ background: 'var(--gray-100)', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                      {p.imagen
+                        ? <img src={p.imagen} alt={p.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
+                        : <div style={{ color: 'var(--gray-300)', fontSize: 12 }}>Sin imagen</div>}
+                    </div>
+                    <div style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{p.marca}</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--black)', marginBottom: 8, lineHeight: 1.3 }}>{p.nombre}</div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: p.en_oferta ? '#DC2626' : 'var(--black)' }}>
+                          ₡{p.precio.toLocaleString('es-CR')}
+                        </div>
+                        <div style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: p.stock > 0 ? '#F0FDF4' : '#FEE2E2', color: p.stock > 0 ? '#16A34A' : '#DC2626' }}>
+                          {p.stock > 0 ? 'En stock' : 'Agotado'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--gray-600)', marginBottom: 4 }}>

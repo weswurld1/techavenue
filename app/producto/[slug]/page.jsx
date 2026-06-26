@@ -109,7 +109,7 @@ export default function ProductoPage({ params }) {
 
       <div className="product-detail-grid">
 
-        <div style={{ position: 'sticky', top: 24 }}>
+        <div className="product-image-col" style={{ position: 'sticky', top: 24 }}>
           <div style={{ background: 'var(--gray-100)', borderRadius: 12, aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
             {producto.en_oferta && (
               <div style={{ position: 'absolute', top: 16, left: 16, background: '#DC2626', color: '#fff', fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 20, zIndex: 1 }}>

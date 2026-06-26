@@ -1330,6 +1330,7 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   /* Product detail */
   .product-detail-grid { grid-template-columns: 1fr; gap: 32px; }
   .product-detail-wrap { padding: 24px 20px 64px; }
+  .product-image-col { position: static !important; }
 
   /* Productos */
   .productos-grid { grid-template-columns: 1fr 1fr; }

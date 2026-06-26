@@ -139,7 +139,7 @@ export default function ProductoPage({ params }) {
                 ₡{producto.precio_original.toLocaleString('es-CR')}
               </div>
             )}
-            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 44, color: producto.en_oferta ? '#DC2626' : 'var(--black)', lineHeight: 1 }}>
+            <div className="product-detail-price" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 44, color: producto.en_oferta ? '#DC2626' : 'var(--black)', lineHeight: 1 }}>
               ₡{producto.precio.toLocaleString('es-CR')}
             </div>
           </div>

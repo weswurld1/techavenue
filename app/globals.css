@@ -14,7 +14,8 @@
   --font-body: 'Barlow', sans-serif;
 }
 
-html { scroll-behavior: smooth; overflow-x: hidden; }
+html, body { overflow-x: hidden; max-width: 100%; }
+html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-body);
@@ -23,6 +24,9 @@ body {
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -39,6 +43,9 @@ button { cursor: pointer; font-family: var(--font-body); border: none; backgroun
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.04em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .announce a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 .announce span { color: var(--gray-400); margin: 0 10px; }
@@ -1396,6 +1403,7 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
 
   /* Product detail */
   .product-detail-wrap { padding: 20px 16px 48px; }
+  .product-detail-price { font-size: 30px !important; }
   .productos-grid { grid-template-columns: 1fr; }
 
   /* Catálogo — 2 por fila en mobile */

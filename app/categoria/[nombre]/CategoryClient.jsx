@@ -277,7 +277,7 @@ export default function CategoryClient({ params }) {
   })
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 32px 96px' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px clamp(12px, 4vw, 32px) 96px' }}>
 
       <div style={{ marginBottom: 36 }}>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E3A8A', marginBottom: 8 }}>
@@ -456,20 +456,15 @@ export default function CategoryClient({ params }) {
                         ? <img src={p.imagen} alt={p.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
                         : <div style={{ color: 'var(--gray-300)', fontSize: 12 }}>Sin imagen</div>}
                     </div>
-                    <div style={{ padding: '14px 16px' }}>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{p.marca}</div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--black)', marginBottom: 8, lineHeight: 1.3 }}>{p.nombre}</div>
-                      <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }}>SKU: {p.sku}</div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          {p.precio_original && (
-                            <div style={{ fontSize: 11, color: 'var(--gray-400)', textDecoration: 'line-through' }}>₡{p.precio_original.toLocaleString('es-CR')}</div>
-                          )}
-                          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: p.en_oferta ? '#DC2626' : 'var(--black)' }}>
-                            ₡{p.precio.toLocaleString('es-CR')}
-                          </div>
+                    <div className="card-body" style={{ padding: '14px 16px' }}>
+                      <div className="card-marca" style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{p.marca}</div>
+                      <div className="card-nombre" style={{ fontSize: 14, fontWeight: 600, color: 'var(--black)', marginBottom: 8, lineHeight: 1.3 }}>{p.nombre}</div>
+                      <div className="card-sku" style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 10 }}>SKU: {p.sku}</div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 4 }}>
+                        <div className="card-precio" style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, color: p.en_oferta ? '#DC2626' : 'var(--black)' }}>
+                          ₡{p.precio.toLocaleString('es-CR')}
                         </div>
-                        <div style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: p.stock > 0 ? '#F0FDF4' : '#FEE2E2', color: p.stock > 0 ? '#16A34A' : '#DC2626' }}>
+                        <div className="card-stock" style={{ fontSize: 11, fontWeight: 700, padding: '3px 8px', borderRadius: 20, background: p.stock > 0 ? '#F0FDF4' : '#FEE2E2', color: p.stock > 0 ? '#16A34A' : '#DC2626', flexShrink: 0 }}>
                           {p.stock > 0 ? 'En stock' : 'Agotado'}
                         </div>
                       </div>

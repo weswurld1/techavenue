@@ -1236,6 +1236,13 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
 }
 .category-filter-toggle:hover { border-color: var(--black); }
 
+/* ── CATALOGO GRID ── */
+.catalogo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
 /* ── PRODUCT DETAIL ── */
 .product-detail-wrap {
   max-width: 1100px;
@@ -1389,6 +1396,9 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   /* Product detail */
   .product-detail-wrap { padding: 20px 16px 48px; }
   .productos-grid { grid-template-columns: 1fr; }
+
+  /* Catálogo — 2 por fila en mobile */
+  .catalogo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
   /* Category */
   .category-layout { gap: 0; }

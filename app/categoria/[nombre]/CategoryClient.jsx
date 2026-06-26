@@ -429,7 +429,7 @@ export default function CategoryClient({ params }) {
           </div>
 
           {loading ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+            <div className="catalogo-grid">
               {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           ) : productosFiltrados.length === 0 ? (
@@ -438,7 +438,7 @@ export default function CategoryClient({ params }) {
               <div style={{ fontSize: 14 }}>Estamos preparando el catálogo de TechAvenue. Volvé pronto.</div>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+            <div className="catalogo-grid">
               {productosFiltrados.map(p => (
                 <Link key={p.id} href={`/producto/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div

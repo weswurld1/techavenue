@@ -93,7 +93,7 @@ function BuscarContent() {
         loading ? (
           <div>
             <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }}>Cargando catálogo...</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+            <div className="catalogo-grid">
               {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
           </div>
@@ -107,7 +107,7 @@ function BuscarContent() {
             <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 24 }}>
               {resultados.length} producto{resultados.length !== 1 ? 's' : ''} encontrado{resultados.length !== 1 ? 's' : ''}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20 }}>
+            <div className="catalogo-grid">
               {resultados.map(p => (
                 <Link key={p.id} href={`/producto/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div

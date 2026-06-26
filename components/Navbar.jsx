@@ -83,8 +83,9 @@ export default function Navbar() {
       <div className={`mobile-menu${menuOpen ? ' open' : ''}`} aria-hidden={!menuOpen}>
         <div className="mobile-backdrop" onClick={() => setMenuOpen(false)} />
         <div className="mobile-panel">
+
           <div className="mobile-panel-header">
-            <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: 4 }} onClick={() => setMenuOpen(false)}>
+            <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center' }} onClick={() => setMenuOpen(false)}>
               <img src="/TITULO.AMARILLO.NEGRO.png" alt="TechAvenue" style={{ height: 44 }} />
             </Link>
             <button className="mobile-close" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>
@@ -93,11 +94,65 @@ export default function Navbar() {
               </svg>
             </button>
           </div>
+
+          {/* Búsqueda */}
+          <div style={{ padding: '12px 20px 0' }}>
+            <button
+              onClick={() => { setMenuOpen(false); setSearchOpen(true) }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                background: 'var(--gray-100)', border: '1.5px solid var(--gray-200)',
+                borderRadius: 8, padding: '11px 14px', cursor: 'pointer',
+                fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--gray-400)',
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              ¿Qué estás buscando?
+            </button>
+          </div>
+
+          {/* Catálogo */}
+          <div style={{ padding: '8px 20px 0' }}>
+            <button
+              onClick={() => { setMenuOpen(false); setCatalogOpen(true) }}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                width: '100%', background: 'var(--black)', color: '#fff',
+                border: 'none', borderRadius: 8, padding: '12px 16px', cursor: 'pointer',
+                fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 700,
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                Ver catálogo completo
+              </span>
+              <span style={{ fontSize: 16 }}>→</span>
+            </button>
+          </div>
+
+          <div style={{ margin: '16px 20px 0', borderTop: '1px solid var(--gray-200)' }} />
+
+          {/* Nav links */}
           <div className="mobile-nav-links">
             {NAV_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</Link>
             ))}
+            <Link href="/carrito" onClick={() => setMenuOpen(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span>Carrito</span>
+              {cantidad > 0 && (
+                <span style={{ background: '#F9BE16', color: 'var(--black)', fontSize: 11, fontWeight: 800, padding: '2px 8px', borderRadius: 20 }}>
+                  {cantidad}
+                </span>
+              )}
+            </Link>
           </div>
+
           <div className="mobile-nav-footer">
             <a
               href="https://wa.me/50663409795"
@@ -112,6 +167,7 @@ export default function Navbar() {
               Contactar por WhatsApp
             </a>
           </div>
+
         </div>
       </div>
 

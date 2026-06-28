@@ -206,7 +206,7 @@ export default function CategoryClient({ params }) {
   }, [searchParams])
   const [precioDesde, setPrecioDesde] = useState(precioMin)
   const [precioHasta, setPrecioHasta] = useState(precioMax)
-  const [soloEnStock, setSoloEnStock] = useState(false)
+  const [soloEnStock, setSoloEnStock] = useState(true)
   const [soloEnOferta, setSoloEnOferta] = useState(false)
   const [ordenar, setOrdenar] = useState('default')
   const [filtrosMobileOpen, setFiltrosMobileOpen] = useState(false)

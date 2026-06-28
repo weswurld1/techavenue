@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 
 const CACHE_MINUTOS = 20
-const CACHE_CLAVE = 'catalogo-divia'
+const CACHE_CLAVE = 'catalogo-divia-v2'
 
 function getSupabase() {
   return createClient(

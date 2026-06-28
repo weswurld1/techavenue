@@ -112,7 +112,7 @@ function mapearProducto(p) {
   }
 }
 
-const CACHE_KEY = 'ta_catalog_v2'
+const CACHE_KEY = 'ta_catalog_v3'
 const CACHE_TTL = 15 * 60 * 1000 // 15 min
 
 function slimForCache(p) {

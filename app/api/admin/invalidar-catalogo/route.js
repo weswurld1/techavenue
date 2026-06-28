@@ -21,7 +21,7 @@ export async function POST(request) {
     const { error } = await supabase
       .from('cache_catalogo_externo')
       .update({ actualizado_en: new Date(0).toISOString() })
-      .eq('clave', 'catalogo-divia')
+      .eq('clave', 'catalogo-divia-v2')
 
     if (error) throw error
 

@@ -43,6 +43,8 @@ function limpiarProductos(respuesta) {
       IVA: p.IVA,
       simboloLocal: p.simboloLocal,
       new: p.new,
+      Total: p.Total,
+      TotalOferta: p.TotalOferta,
     })),
   }
 }

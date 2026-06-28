@@ -2,7 +2,6 @@
 import { useState, useMemo, use, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { toSlug } from '@/lib/utils'
 import { useCatalogo } from '@/context/CatalogoContext'
 
 const NOMBRES_CATEGORIA = {
@@ -453,7 +452,7 @@ export default function CategoryClient({ params }) {
                     )}
                     <div style={{ background: 'var(--gray-100)', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                       {p.imagen
-                        ? <img src={p.imagen} alt={p.nombre} style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
+                        ? <img src={p.imagen} alt={p.nombre} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 16 }} />
                         : <div style={{ color: 'var(--gray-300)', fontSize: 12 }}>Sin imagen</div>}
                     </div>
                     <div className="card-body" style={{ padding: '14px 16px' }}>

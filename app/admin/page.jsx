@@ -46,6 +46,8 @@ export default function AdminPage() {
   const [skuNovedadInput, setSkuNovedadInput]     = useState('')
   const [novedades, setNovedades]                 = useState([])
   const [cargandoNovedades, setCargandoNovedades] = useState(true)
+  const [invalidando, setInvalidando]             = useState(false)
+  const [mensajeCache, setMensajeCache]           = useState(null)
 
   const authHeaders = (extra = {}) => ({
     'Content-Type': 'application/json',
@@ -184,6 +186,23 @@ export default function AdminPage() {
     setNovedades(prev => prev.filter(d => d.id !== id))
   }
 
+  const invalidarCatalogo = async () => {
+    setInvalidando(true)
+    setMensajeCache(null)
+    try {
+      const res = await fetch('/api/admin/invalidar-catalogo', {
+        method: 'POST',
+        headers: authHeaders(),
+      })
+      const data = await res.json()
+      setMensajeCache(data.ok ? { tipo: 'ok', texto: data.mensaje } : { tipo: 'error', texto: data.error })
+    } catch {
+      setMensajeCache({ tipo: 'error', texto: 'Error de conexión' })
+    } finally {
+      setInvalidando(false)
+    }
+  }
+
   const pedidosFiltrados = useMemo(() => {
     let result = pedidos.filter(p => {
       if (filtro === 'archivados')    return p.archivado
@@ -275,6 +294,7 @@ export default function AdminPage() {
               { key: 'destacados',  label: 'Destacados' },
               { key: 'promociones', label: 'Promociones' },
               { key: 'novedades',   label: 'Novedades' },
+              { key: 'catalogo',    label: 'Catálogo' },
             ].map(s => (
               <button
                 key={s.key}
@@ -540,6 +560,53 @@ export default function AdminPage() {
             lista={novedades}
             onEliminar={eliminarNovedad}
           />
+        )}
+
+        {seccion === 'catalogo' && (
+          <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #E5E7EB', padding: '32px', maxWidth: 560 }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--black)', marginBottom: 4 }}>Catálogo Divia</div>
+            <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 28 }}>
+              Los precios vienen del endpoint de Divia y se guardan en caché por 20 minutos. Si Divia actualizó un precio y querés que el sitio lo muestre de inmediato, usá este botón para borrar el caché.
+            </div>
+
+            <button
+              onClick={invalidarCatalogo}
+              disabled={invalidando}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: invalidando ? '#F3F4F6' : 'var(--black)',
+                color: invalidando ? 'var(--gray-400)' : '#fff',
+                border: 'none', borderRadius: 8, padding: '12px 24px',
+                fontWeight: 700, fontSize: 14, cursor: invalidando ? 'not-allowed' : 'pointer',
+                fontFamily: 'var(--font-body)', transition: 'background 0.15s',
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+              </svg>
+              {invalidando ? 'Actualizando...' : 'Forzar actualización de precios'}
+            </button>
+
+            {mensajeCache && (
+              <div style={{
+                marginTop: 16, padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+                background: mensajeCache.tipo === 'ok' ? '#F0FDF4' : '#FEF2F2',
+                color: mensajeCache.tipo === 'ok' ? '#16A34A' : '#DC2626',
+                border: `1px solid ${mensajeCache.tipo === 'ok' ? '#BBF7D0' : '#FECACA'}`,
+              }}>
+                {mensajeCache.texto}
+              </div>
+            )}
+
+            <div style={{ marginTop: 28, padding: '16px', background: '#F9FAFB', borderRadius: 8, border: '1px solid #E5E7EB' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--gray-600)', marginBottom: 8 }}>¿Cómo funciona?</div>
+              <div style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.7 }}>
+                <div>1. Divia actualiza el precio en su sistema</div>
+                <div>2. Entrás aquí y presionás el botón</div>
+                <div>3. El próximo visitante ve el precio nuevo al instante</div>
+              </div>
+            </div>
+          </div>
         )}
 
       </div>

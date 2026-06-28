@@ -31,10 +31,12 @@ function BuscarContent() {
     if (!query.trim() || loading) return []
     const q = query.toLowerCase()
     return productos.filter(p =>
-      p.nombre?.toLowerCase().includes(q) ||
-      p.marca?.toLowerCase().includes(q) ||
-      p.subcategoria_original?.toLowerCase().includes(q) ||
-      p.partNumber?.toLowerCase().includes(q)
+      p.stock > 0 && (
+        p.nombre?.toLowerCase().includes(q) ||
+        p.marca?.toLowerCase().includes(q) ||
+        p.subcategoria_original?.toLowerCase().includes(q) ||
+        p.partNumber?.toLowerCase().includes(q)
+      )
     )
   }, [query, productos, loading])
 

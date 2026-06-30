@@ -195,7 +195,12 @@ export default function AdminPage() {
         headers: authHeaders(),
       })
       const data = await res.json()
-      setMensajeCache(data.ok ? { tipo: 'ok', texto: data.mensaje } : { tipo: 'error', texto: data.error })
+      if (data.ok) {
+        const hora = data.actualizado_en ? new Date(data.actualizado_en).toLocaleTimeString('es-CR') : ''
+        setMensajeCache({ tipo: 'ok', texto: `${data.mensaje}${hora ? ` (${hora})` : ''}` })
+      } else {
+        setMensajeCache({ tipo: 'error', texto: data.mensaje || data.error })
+      }
     } catch {
       setMensajeCache({ tipo: 'error', texto: 'Error de conexión' })
     } finally {
@@ -603,7 +608,7 @@ export default function AdminPage() {
               <div style={{ fontSize: 13, color: 'var(--gray-600)', lineHeight: 1.7 }}>
                 <div>1. Divia actualiza el precio en su sistema</div>
                 <div>2. Entrás aquí y presionás el botón</div>
-                <div>3. El próximo visitante ve el precio nuevo al instante</div>
+                <div>3. El sitio jala los precios de Divia al instante y los actualiza</div>
               </div>
             </div>
           </div>

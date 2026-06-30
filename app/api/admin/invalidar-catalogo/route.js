@@ -55,6 +55,8 @@ export async function POST(request) {
   try {
     // Fetch fresh data directly from Divia
     const url = process.env.CATALOGO_EXTERNO_URL
+    if (!url) throw new Error('CATALOGO_EXTERNO_URL no está configurado en las variables de entorno de Vercel')
+
     const token = process.env.CATALOGO_EXTERNO_TOKEN
     const fullUrl = token ? `${url}?token=${token}` : url
 

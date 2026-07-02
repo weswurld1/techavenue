@@ -1,17 +1,23 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { toSlug } from '@/lib/utils'
+import { useCatalogo } from '@/context/CatalogoContext'
 
 export default function Slideshow() {
-  const [slides, setSlides] = useState([])
+  const [skus, setSkus] = useState([])
   const [current, setCurrent] = useState(0)
   const timerRef = useRef(null)
+  const { productos } = useCatalogo()
 
   useEffect(() => {
     fetch('/api/destacados')
       .then(r => r.json())
-      .then(d => setSlides(d.productos || []))
+      .then(d => setSkus((d.lista || []).map(x => x.sku)))
   }, [])
+
+  const slides = skus
+    .map(sku => productos.find(p => p.sku === String(sku)))
+    .filter(Boolean)
 
   const goTo = (n) => setCurrent((n + slides.length) % slides.length)
   const next = () => goTo(current + 1)
@@ -22,9 +28,10 @@ export default function Slideshow() {
 
   useEffect(() => {
     if (slides.length === 0) return
+    if (current >= slides.length) setCurrent(0)
     startAuto()
     return () => stopAuto()
-  }, [current, slides])
+  }, [current, slides.length])
 
   if (slides.length === 0) return (
     <section className="products-section">
@@ -61,12 +68,11 @@ export default function Slideshow() {
                 <div className="slide" key={i}>
                   <div className="slide-image-area">
                     <img src={s.imagen} alt={s.nombre} onError={e => { e.target.style.opacity = '0' }} />
-                    {s.badge && <span className={`product-badge ${s.badge === 'Nuevo' ? 'badge-new' : 'badge-sale'}`}>{s.badge}</span>}
+                    {s.en_oferta && <span className="product-badge badge-sale">Oferta</span>}
                   </div>
                   <div className="slide-info">
                     <span className="slide-brand">{s.marca}</span>
-                    <a href={`/producto/${toSlug(s.nombre)}`} className="slide-name">{s.nombre}</a>
-                    <span className="slide-spec">{s.descripcion}</span>
+                    <a href={`/producto/${s.id}`} className="slide-name">{s.nombre}</a>
                     <div className="slide-price-row">
                       <span className="slide-price">₡{s.precio?.toLocaleString('es-CR')}</span>
                       {s.precio_original && <span className="slide-price-old">₡{s.precio_original?.toLocaleString('es-CR')}</span>}

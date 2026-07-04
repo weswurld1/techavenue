@@ -12,26 +12,15 @@ export async function GET() {
     prods.forEach(prod => {
       const key = prod.sku || prod.nombre
       if (!key) return
-      if (!conteo[key]) conteo[key] = { sku: prod.sku || null, nombre: prod.nombre, cantidad: 0 }
-      conteo[key].cantidad += prod.cantidad || 1
+      if (!conteo[key]) conteo[key] = { sku: prod.sku || null, ventas: 0 }
+      conteo[key].ventas += prod.cantidad || 1
     })
   })
 
-  const top = Object.values(conteo)
-    .sort((a, b) => b.cantidad - a.cantidad)
+  const productos = Object.values(conteo)
+    .filter(p => p.sku)
+    .sort((a, b) => b.ventas - a.ventas)
     .slice(0, 24)
-
-  const skus = top.filter(p => p.sku).map(p => p.sku)
-
-  let productos = []
-  if (skus.length > 0) {
-    const { data } = await supabase.from('productos').select('*').in('sku', skus)
-    productos = skus.map(sku => {
-      const prod = data?.find(p => p.sku === sku)
-      if (!prod) return null
-      return { ...prod, ventas: conteo[sku]?.cantidad || 0 }
-    }).filter(Boolean)
-  }
 
   return Response.json({ productos })
 }

@@ -126,7 +126,6 @@ const SECCIONES = [
 ]
 
 const MOBILE_LINKS = [
-  { href: '/mas-vendidos',  label: 'Lo más vendido' },
   { href: '/estado-pedido', label: 'Estado de mi pedido' },
   { href: '/contacto',      label: 'Contacto' },
 ]

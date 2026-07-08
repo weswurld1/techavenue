@@ -3,98 +3,167 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const CatalogoContext = createContext({ productos: [], loading: true })
 
-// Mapeo exacto de subcategorías del proveedor → categorías de TechAvenue
-const MAPA_CATEGORIAS = {
-  // Componentes
-  'Componentes de PC > Procesadores':           { categoria: 'componentes',            subcategoria: 'cpu',            tipo_periferico: null },
-  'Componentes de PC > Tarjetas de Video':      { categoria: 'componentes',            subcategoria: 'gpu',            tipo_periferico: null },
-  'Componentes de PC > Tarjetas Madre':         { categoria: 'componentes',            subcategoria: 'placas-madre',   tipo_periferico: null },
-  'Almacenamiento > Memorias RAM para PC':      { categoria: 'componentes',            subcategoria: 'ram',            tipo_periferico: null },
-  'Almacenamiento > Memorias RAM para Laptop':  { categoria: 'componentes',            subcategoria: 'ram',            tipo_periferico: null },
-  'Almacenamiento > Discos Duros Solidos Internos': { categoria: 'componentes',        subcategoria: 'almacenamiento', tipo_periferico: null },
-  'Almacenamiento > Discos Duros Internos':     { categoria: 'componentes',            subcategoria: 'almacenamiento', tipo_periferico: null },
-  'Componentes de PC > Cases':                  { categoria: 'componentes',            subcategoria: 'gabinetes',      tipo_periferico: null },
-  'Componentes de PC > Fuentes de Poder':       { categoria: 'componentes',            subcategoria: 'fuentes-de-poder', tipo_periferico: null },
-  'Componentes de PC > Enfriamiento Liquido':   { categoria: 'componentes',            subcategoria: 'refrigeracion',  tipo_periferico: null },
-  'Componentes de PC > Enfriamiento de Aire':   { categoria: 'componentes',            subcategoria: 'refrigeracion',  tipo_periferico: null },
-  'Componentes de PC > Abanicos':               { categoria: 'componentes',            subcategoria: 'refrigeracion',  tipo_periferico: null },
-  'Componentes de PC > Pastas/Parches Termicos':{ categoria: 'componentes',            subcategoria: 'pastas-termicas',tipo_periferico: null },
-  // Periféricos
-  'Perifericos > Mouses':                       { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Mouse' },
-  'Perifericos > Teclados':                     { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Teclado' },
-  'Perifericos > Combos Teclado y Mouse':       { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Teclado' },
-  'Perifericos > Headsets':                     { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Headset' },
-  'Perifericos > Audífonos':                    { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Audífonos' },
-  'Perifericos > Cámaras Web/Digitales':        { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Webcam' },
-  'Perifericos > Mouse Pads':                   { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Mouse' },
-  'Dispositivos de visualizacion > Monitores':  { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Monitor' },
-  'Hogar y oficina > Sillas':                   { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Silla' },
-  'Audio y Sonido > Parlantes':                 { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Parlantes' },
-  'Audio y Sonido > Micrófonos':                { categoria: 'perifericos',            subcategoria: null, tipo_periferico: 'Micrófono' },
-  // Computadoras
-  'Laptops > Inglés':                           { categoria: 'computadoras',           subcategoria: 'laptops',        tipo_periferico: null },
-  'Laptops > Español':                          { categoria: 'computadoras',           subcategoria: 'laptops',        tipo_periferico: null },
-  'Dispositivos Móviles  > Tablets':            { categoria: 'computadoras',           subcategoria: 'tablets',        tipo_periferico: null },
-  'Dispositivos Móviles  > Celulares':          { categoria: 'computadoras',           subcategoria: 'tablets',        tipo_periferico: null },
-  'Dispositivos Móviles  > Smart Watches':      { categoria: 'computadoras',           subcategoria: 'tablets',        tipo_periferico: null },
-  'COMPUTADORAS':                               { categoria: 'computadoras',           subcategoria: null,             tipo_periferico: null },
-  // Gaming y Streaming
-  'Gaming > Controles':                         { categoria: 'streaming-y-gaming',     subcategoria: null,             tipo_periferico: null },
-  // Energía y Conectividad
-  'Respaldo Eléctrico > UPS':                   { categoria: 'energia-y-conectividad', subcategoria: 'ups',            tipo_periferico: null },
-  'Respaldo Eléctrico > Power Banks':           { categoria: 'energia-y-conectividad', subcategoria: 'power-banks',    tipo_periferico: null },
-  'Redes y Conectividad > Routers':             { categoria: 'energia-y-conectividad', subcategoria: 'redes',          tipo_periferico: null },
-  'Redes y Conectividad > Switches':            { categoria: 'energia-y-conectividad', subcategoria: 'redes',          tipo_periferico: null },
-  'Redes y Conectividad > Puntos de Acceso':    { categoria: 'energia-y-conectividad', subcategoria: 'redes',          tipo_periferico: null },
-  'Smart Home > Iluminación Inteligente':       { categoria: 'energia-y-conectividad', subcategoria: 'smart-home',     tipo_periferico: null },
-  // Accesorios
-  'ACCESORIOS > Cables':                        { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'ACCESORIOS > Adaptadores':                   { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'ACCESORIOS > Hubs':                          { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'ACCESORIOS > Soportes':                      { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'ACCESORIOS > Cargadores':                    { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'ACCESORIOS > Mochilas y Maletas':            { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'Almacenamiento > Memorias USB':              { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'Almacenamiento > Memorias Micro SD':         { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  'Almacenamiento > Discos Duros Solidos Externos': { categoria: 'accesorios',         subcategoria: null,             tipo_periferico: null },
-  'Almacenamiento > Discos Duros Externos':     { categoria: 'accesorios',             subcategoria: null,             tipo_periferico: null },
-  // Software
-  'Software > Garantias':                       { categoria: 'software',               subcategoria: null,             tipo_periferico: null },
-  // Hogar
-  'Impresión > Impresoras':                     { categoria: 'hogar',                  subcategoria: null,             tipo_periferico: null },
-  'Impresión > Consumibles':                    { categoria: 'hogar',                  subcategoria: null,             tipo_periferico: null },
-  'Seguridad > Camaras':                        { categoria: 'hogar',                  subcategoria: null,             tipo_periferico: null },
-  'Seguridad > Grabadoras':                     { categoria: 'hogar',                  subcategoria: null,             tipo_periferico: null },
-  // Excluidos (no aparecen en la tienda)
-  'Seguridad > Sensores':                       null,
-  'Seguridad > Controles de Acceso':            null,
-  'Punto de Venta > Consumibles Pv':            null,
-  'Punto de Venta > Impresoras Pv':             null,
-  'Punto de Venta > Lectores':                  null,
-  'ACCESORIOS > Carro':                         null,
-  'Utensilios':                                 null,
-  'SERVIDORES':                                 null,
+// Categoriza productos por palabras clave en el nombre
+// Divia no tiene subcategorías consistentes (96% son null)
+function n(str) {
+  return (' ' + (str || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase() + ' ')
 }
 
-function norm(str) {
-  return (str || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
-}
+function detectarCategoria(nombreRaw, marcaRaw) {
+  const nombre = n(nombreRaw)
+  const marca  = n(marcaRaw)
 
-const MAPA_NORM = Object.fromEntries(
-  Object.entries(MAPA_CATEGORIAS).map(([k, v]) => [norm(k), v])
-)
+  const tiene = (...kw) => kw.some(k => nombre.includes(n(k).trim()))
 
-function mapearCategorias(subcategoriaExterna) {
-  const resultado = MAPA_NORM[norm(subcategoriaExterna)]
-  if (resultado === null) return null // excluido
-  if (resultado) return resultado
-  // Fallback para subcategorías no mapeadas aún
-  return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
+  // ── Computadoras ────────────────────────────────────────────────
+  if (tiene('laptop', 'notebook') && !tiene('soporte', 'base para laptop', 'cooler para laptop', 'mochila', 'maletín', 'funda'))
+    return { categoria: 'computadoras', subcategoria: 'laptops', tipo_periferico: null }
+  if (tiene('tablet', 'ipad') && !tiene('soporte para tablet'))
+    return { categoria: 'computadoras', subcategoria: 'tablets', tipo_periferico: null }
+  if (tiene('celular', 'smartphone', 'smart watch', 'smartwatch'))
+    return { categoria: 'computadoras', subcategoria: 'tablets', tipo_periferico: null }
+
+  // ── Componentes — GPU ────────────────────────────────────────────
+  if (tiene('tarjeta de video', 'tarjeta grafica', 'video card', 'graphics card') ||
+      tiene('rtx', 'gtx', 'geforce', 'radeon rx', 'arc a') ||
+      (tiene('radeon') && !tiene('laptop')))
+    return { categoria: 'componentes', subcategoria: 'gpu', tipo_periferico: null }
+
+  // ── Componentes — CPU ────────────────────────────────────────────
+  if (tiene('procesador', 'processor') ||
+      tiene('core i3', 'core i5', 'core i7', 'core i9', 'core ultra') ||
+      tiene('ryzen 3', 'ryzen 5', 'ryzen 7', 'ryzen 9', 'ryzen threadripper') ||
+      tiene('athlon', 'pentium gold', 'celeron'))
+    return { categoria: 'componentes', subcategoria: 'cpu', tipo_periferico: null }
+
+  // ── Componentes — RAM ────────────────────────────────────────────
+  if (tiene('memoria ram', ' ram ', 'ddr5', 'ddr4', 'ddr3', 'sodimm', 'so-dimm'))
+    return { categoria: 'componentes', subcategoria: 'ram', tipo_periferico: null }
+
+  // ── Accesorios — Externo / USB (antes de almacenamiento interno) ─
+  if (tiene('disco externo', 'disco duro externo', 'ssd externo', 'hdd externo', 'disco portatil'))
+    return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
+  if (tiene('memoria usb', 'pendrive', 'pen drive', 'micro sd', 'microsd', ' sd card', 'memoria flash'))
+    return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
+
+  // ── Componentes — Almacenamiento interno ─────────────────────────
+  if (tiene('disco ssd', 'ssd m.2', 'ssd 2.5', 'nvme', ' ssd ', 'disco duro interno', 'disco interno') ||
+      (tiene('hdd') && !tiene('externo')))
+    return { categoria: 'componentes', subcategoria: 'almacenamiento', tipo_periferico: null }
+
+  // ── Componentes — Placa madre ────────────────────────────────────
+  if (tiene('placa madre', 'tarjeta madre', 'motherboard', 'mainboard'))
+    return { categoria: 'componentes', subcategoria: 'placas-madre', tipo_periferico: null }
+
+  // ── Componentes — Fuente de poder ────────────────────────────────
+  if (tiene('fuente de poder', 'fuente poder', 'power supply', ' psu ', 'fuente atx'))
+    return { categoria: 'componentes', subcategoria: 'fuentes-de-poder', tipo_periferico: null }
+
+  // ── Componentes — Gabinete ───────────────────────────────────────
+  if (tiene('gabinete', 'case atx', 'case matx', 'case itx', 'tower pc', 'chasis pc') ||
+      (tiene(' case ') && tiene('pc', 'gamer', 'gaming', 'atx', 'rgb')))
+    return { categoria: 'componentes', subcategoria: 'gabinetes', tipo_periferico: null }
+
+  // ── Componentes — Pasta térmica ──────────────────────────────────
+  if (tiene('pasta termica', 'thermal paste', 'thermal pad', 'parche termico', 'pasta conductora'))
+    return { categoria: 'componentes', subcategoria: 'pastas-termicas', tipo_periferico: null }
+
+  // ── Componentes — Refrigeración ──────────────────────────────────
+  if (tiene('liquid cooling', 'water cooling', 'enfriamiento liquido', 'aio cooler', 'disipador cpu', 'cooler cpu', 'cooler procesador') ||
+      (tiene('ventilador', 'abanico', ' fan ') && tiene('pc', 'case', 'cpu', 'gamer', '120mm', '140mm', '200mm')))
+    return { categoria: 'componentes', subcategoria: 'refrigeracion', tipo_periferico: null }
+
+  // ── Periféricos — Monitor ────────────────────────────────────────
+  if (tiene('monitor') && !tiene('soporte para monitor', 'brazo monitor', 'base monitor'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Monitor' }
+
+  // ── Periféricos — Mouse ──────────────────────────────────────────
+  if (tiene('mouse pad', 'mousepad', 'pad mouse'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Mouse' }
+  if (tiene('mouse') || tiene('raton '))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Mouse' }
+
+  // ── Periféricos — Teclado ────────────────────────────────────────
+  if (tiene('teclado', 'keyboard', 'combo teclado'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Teclado' }
+
+  // ── Periféricos — Headset ────────────────────────────────────────
+  if (tiene('headset') || (tiene('audifono', 'audifonos', 'auricular') && tiene('gamer', 'gaming')))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Headset' }
+
+  // ── Periféricos — Audífonos ──────────────────────────────────────
+  if (tiene('audifono', 'audifonos', 'earphone', 'earbuds', 'in-ear', 'over-ear', 'auricular', 'inalambrico') && !tiene('gamer', 'gaming'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Audífonos' }
+
+  // ── Periféricos — Webcam ─────────────────────────────────────────
+  if (tiene('webcam', 'web cam', 'camara web', 'camara usb hd'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Webcam' }
+
+  // ── Periféricos — Micrófono ──────────────────────────────────────
+  if (tiene('microfono', 'microphone'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Micrófono' }
+
+  // ── Periféricos — Parlantes ──────────────────────────────────────
+  if (tiene('parlante', 'bocina', ' speaker', 'barra de sonido', 'soundbar', 'barra sonido'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Parlantes' }
+
+  // ── Periféricos — Silla ──────────────────────────────────────────
+  if (tiene('silla') && tiene('gamer', 'gaming', 'ergonomica', 'oficina'))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Silla' }
+
+  // ── Periféricos — Escritorio ─────────────────────────────────────
+  if ((tiene('escritorio', 'desk', 'mesa') && tiene('gamer', 'gaming')))
+    return { categoria: 'perifericos', subcategoria: null, tipo_periferico: 'Escritorio' }
+
+  // ── Energía — UPS ────────────────────────────────────────────────
+  if (tiene(' ups ') || (tiene('respaldo') && tiene('electrico', 'bateria')) || tiene('no-break', 'nobreak'))
+    return { categoria: 'energia-y-conectividad', subcategoria: 'ups', tipo_periferico: null }
+
+  // ── Energía — Power Bank ─────────────────────────────────────────
+  if (tiene('power bank', 'powerbank', 'bateria portatil', 'cargador portatil', 'banco de energia', 'banco energia'))
+    return { categoria: 'energia-y-conectividad', subcategoria: 'power-banks', tipo_periferico: null }
+
+  // ── Energía — Redes ──────────────────────────────────────────────
+  if (tiene('router', ' switch ', 'access point', 'punto de acceso', 'adaptador wifi', 'tarjeta de red', 'usb wifi', 'antena wifi', 'extensor wifi', 'repetidor wifi', 'cable de red', 'cable ethernet', 'cable utp', 'cable rj45'))
+    return { categoria: 'energia-y-conectividad', subcategoria: 'redes', tipo_periferico: null }
+
+  // ── Energía — Smart Home ─────────────────────────────────────────
+  if (tiene('smart home', 'foco inteligente', 'bombillo inteligente', 'smart bulb', 'smart plug', 'enchufe inteligente'))
+    return { categoria: 'energia-y-conectividad', subcategoria: 'smart-home', tipo_periferico: null }
+
+  // ── Streaming y Gaming ───────────────────────────────────────────
+  if (tiene('capturadora', 'capture card', 'stream deck', 'elgato'))
+    return { categoria: 'streaming-y-gaming', subcategoria: 'streaming', tipo_periferico: null }
+  if ((tiene('volante') && tiene('racing', 'gamer', 'gaming')) || tiene('sim racing', 'playseat', 'fanatec', 'thrustmaster'))
+    return { categoria: 'streaming-y-gaming', subcategoria: 'sim-racing', tipo_periferico: null }
+
+  // ── Software ─────────────────────────────────────────────────────
+  if (tiene('windows 10', 'windows 11', 'microsoft 365', 'office 365', 'office 2021', 'office 2019', 'licencia windows', 'licencia office', 'licencia antivirus') ||
+      (tiene('licencia') && tiene('software', 'antivirus')))
+    return { categoria: 'software', subcategoria: null, tipo_periferico: null }
+
+  // ── Hogar ────────────────────────────────────────────────────────
+  if (tiene('impresora', 'printer', 'multifuncional', 'escaner', 'scanner') ||
+      (tiene('tinta', 'toner', 'cartucho') && !tiene('bateria')))
+    return { categoria: 'hogar', subcategoria: null, tipo_periferico: null }
+  if (tiene('camara de seguridad', 'camara ip', ' cctv', ' dvr ', ' nvr '))
+    return { categoria: 'hogar', subcategoria: null, tipo_periferico: null }
+
+  // ── Accesorios ───────────────────────────────────────────────────
+  if (tiene('cable ', 'adaptador', 'convertidor', 'hub usb', 'hub tipo', 'docking', 'dock station') ||
+      tiene('soporte ', 'brazo ') ||
+      tiene('mochila', 'maletin', 'maletín', 'funda laptop', 'bolso laptop') ||
+      tiene('cargador', 'carga rapida') ||
+      tiene('limpiador pantalla', 'spray limpia'))
+    return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
+
+  // Sin categoría reconocida — no mostrar en tienda
+  return null
 }
 
 function mapearProducto(p) {
-  const cats = mapearCategorias(p.subcategoria)
-  if (!cats) return null // categoría excluida
+  const cats = detectarCategoria(p.nombre, p.marca)
+  if (!cats) return null
 
   const { categoria, subcategoria, tipo_periferico } = cats
   const imageUrl = Array.isArray(p.imageUrls)
@@ -116,11 +185,10 @@ function mapearProducto(p) {
     categoria,
     subcategoria,
     tipo_periferico,
-    subcategoria_original: p.subcategoria,
   }
 }
 
-const CACHE_KEY = 'ta_catalog_v3'
+const CACHE_KEY = 'ta_catalog_v4'
 const CACHE_TTL = 15 * 60 * 1000 // 15 min
 
 function slimForCache(p) {
@@ -130,7 +198,7 @@ function slimForCache(p) {
     precio: p.precio, precio_original: p.precio_original,
     stock: p.stock, imagen: p.imagen, en_oferta: p.en_oferta,
     categoria: p.categoria, subcategoria: p.subcategoria,
-    tipo_periferico: p.tipo_periferico, subcategoria_original: p.subcategoria_original,
+    tipo_periferico: p.tipo_periferico,
   }
 }
 

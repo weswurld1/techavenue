@@ -204,8 +204,8 @@ export default function CategoryClient({ params }) {
     const sub = searchParams.get('sub')
     setSubcatActiva(sub || null)
   }, [searchParams])
-  const [precioDesde, setPrecioDesde] = useState(precioMin)
-  const [precioHasta, setPrecioHasta] = useState(precioMax)
+  const [precioDesde, setPrecioDesde] = useState(null)
+  const [precioHasta, setPrecioHasta] = useState(null)
   const [soloEnStock, setSoloEnStock] = useState(true)
   const [soloEnOferta, setSoloEnOferta] = useState(false)
   const [ordenar, setOrdenar] = useState('default')
@@ -224,19 +224,21 @@ export default function CategoryClient({ params }) {
   const limpiarFiltros = () => {
     setSeleccionados({})
     setSubcatActiva(null)
-    setPrecioDesde(precioMin)
-    setPrecioHasta(precioMax)
+    setPrecioDesde(null)
+    setPrecioHasta(null)
     setSoloEnStock(false)
     setSoloEnOferta(false)
   }
 
-  const hayFiltrosActivos = Object.values(seleccionados).some(v => v.length > 0) || soloEnStock || soloEnOferta || subcatActiva !== null || precioDesde > precioMin || precioHasta < precioMax
+  const hayFiltrosActivos = Object.values(seleccionados).some(v => v.length > 0) || soloEnStock || soloEnOferta || subcatActiva !== null || (precioDesde !== null && precioDesde > precioMin) || (precioHasta !== null && precioHasta < precioMax)
 
   const productosFiltrados = useMemo(() => {
     let result = [...productos]
     if (soloEnStock) result = result.filter(p => p.stock > 0)
     if (soloEnOferta) result = result.filter(p => p.en_oferta)
-    result = result.filter(p => p.precio >= precioDesde && p.precio <= precioHasta)
+    const desde = precioDesde ?? precioMin
+    const hasta = precioHasta ?? precioMax
+    if (hasta > 0) result = result.filter(p => p.precio >= desde && p.precio <= hasta)
     if (subcatConfig && subcatActiva !== null) {
       result = result.filter(p => p[subcatConfig.campo] === subcatActiva)
     }
@@ -357,11 +359,11 @@ export default function CategoryClient({ params }) {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                 <div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Desde</div>
-                  <input type="number" value={precioDesde} onChange={e => setPrecioDesde(Number(e.target.value))} style={inputStyle} min={precioMin} max={precioHasta} />
+                  <input type="number" value={precioDesde ?? precioMin} onChange={e => setPrecioDesde(Number(e.target.value))} style={inputStyle} min={precioMin} max={precioHasta ?? precioMax} />
                 </div>
                 <div>
                   <div style={{ fontSize: 11, color: 'var(--gray-400)', marginBottom: 4 }}>Hasta</div>
-                  <input type="number" value={precioHasta} onChange={e => setPrecioHasta(Number(e.target.value))} style={inputStyle} min={precioDesde} max={precioMax} />
+                  <input type="number" value={precioHasta ?? precioMax} onChange={e => setPrecioHasta(Number(e.target.value))} style={inputStyle} min={precioDesde ?? precioMin} max={precioMax} />
                 </div>
               </div>
             </div>
@@ -433,8 +435,23 @@ export default function CategoryClient({ params }) {
             </div>
           ) : productosFiltrados.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--gray-400)' }}>
-              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--black)', marginBottom: 8 }}>Productos próximamente</div>
-              <div style={{ fontSize: 14 }}>Estamos preparando el catálogo de TechAvenue. Volvé pronto.</div>
+              <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--black)', marginBottom: 8 }}>
+                {hayFiltrosActivos ? 'Sin resultados con estos filtros' : 'Productos próximamente'}
+              </div>
+              <div style={{ fontSize: 14, marginBottom: 24 }}>
+                {hayFiltrosActivos
+                  ? 'Probá desactivar "Solo en stock" o ajustar los filtros.'
+                  : 'Estamos preparando el catálogo. Volvé pronto.'}
+              </div>
+              {hayFiltrosActivos && (
+                <button
+                  onClick={limpiarFiltros}
+                  style={{ background: 'var(--black)', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+                >
+                  Limpiar filtros
+                </button>
+              )}
             </div>
           ) : (
             <div className="catalogo-grid">

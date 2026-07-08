@@ -76,8 +76,16 @@ const MAPA_CATEGORIAS = {
   'SERVIDORES':                                 null,
 }
 
+function norm(str) {
+  return (str || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
+}
+
+const MAPA_NORM = Object.fromEntries(
+  Object.entries(MAPA_CATEGORIAS).map(([k, v]) => [norm(k), v])
+)
+
 function mapearCategorias(subcategoriaExterna) {
-  const resultado = MAPA_CATEGORIAS[subcategoriaExterna?.trim()]
+  const resultado = MAPA_NORM[norm(subcategoriaExterna)]
   if (resultado === null) return null // excluido
   if (resultado) return resultado
   // Fallback para subcategorías no mapeadas aún

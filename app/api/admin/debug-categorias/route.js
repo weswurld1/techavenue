@@ -27,15 +27,23 @@ export async function GET(request) {
   }
 
   const productos = data.datos?.data || []
+
+  // Campos disponibles en un producto de muestra
+  const muestra = productos[0] || null
+  const campos = muestra ? Object.keys(muestra) : []
+
+  // Conteo por subcategoria
   const conteo = {}
   for (const p of productos) {
     const sub = p.subcategoria || '(sin subcategoría)'
     conteo[sub] = (conteo[sub] || 0) + 1
   }
-
-  const lista = Object.entries(conteo)
+  const subcategorias = Object.entries(conteo)
     .sort((a, b) => b[1] - a[1])
     .map(([subcategoria, cantidad]) => ({ subcategoria, cantidad }))
 
-  return Response.json({ total: productos.length, subcategorias: lista })
+  // Muestra 3 productos con todos sus campos para ver la estructura real
+  const ejemplos = productos.slice(0, 3)
+
+  return Response.json({ total: productos.length, campos, subcategorias, ejemplos })
 }

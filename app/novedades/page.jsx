@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCatalogo } from '@/context/CatalogoContext'
+import { toSlug } from '@/lib/utils'
 
 export default function NovedadesPage() {
   const [skus, setSkus] = useState(null)
@@ -63,7 +64,7 @@ export default function NovedadesPage() {
 
 function ProductCard({ p }) {
   return (
-    <Link href={`/producto/${p.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+    <Link href={`/producto/${toSlug(p.nombre)}-${p.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
       <div
         style={{ border: '1.5px solid var(--gray-200)', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border-color 0.15s, box-shadow 0.15s' }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--black)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)' }}

@@ -3,7 +3,6 @@ import { useState, use } from 'react'
 import Link from 'next/link'
 import { useCarrito } from '@/context/CartContext'
 import { useToast } from '@/components/Toast'
-import { toSlug } from '@/lib/utils'
 import { useCatalogo } from '@/context/CatalogoContext'
 
 const CATEGORIA_LABEL = {
@@ -38,8 +37,9 @@ const SPECS_LABELS = {
 
 export default function ProductoPage({ params }) {
   const { slug } = use(params)
+  const id = slug.slice(slug.lastIndexOf('-') + 1)
   const { productos, loading } = useCatalogo()
-  const producto = productos.find(p => String(p.id) === slug)
+  const producto = productos.find(p => String(p.id) === id)
   const { agregar } = useCarrito()
   const { mostrar } = useToast()
   const [agregado, setAgregado] = useState(false)

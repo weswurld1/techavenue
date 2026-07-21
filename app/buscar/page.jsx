@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useCatalogo } from '@/context/CatalogoContext'
+import { toSlug } from '@/lib/utils'
 
 function SkeletonCard() {
   return (
@@ -111,7 +112,7 @@ function BuscarContent() {
             </div>
             <div className="catalogo-grid">
               {resultados.map(p => (
-                <Link key={p.id} href={`/producto/${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Link key={p.id} href={`/producto/${toSlug(p.nombre)}-${p.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                   <div
                     style={{ border: '1.5px solid var(--gray-200)', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', position: 'relative', transition: 'border-color 0.15s, box-shadow 0.15s' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--black)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.08)' }}

@@ -72,7 +72,7 @@ export default function Slideshow() {
                   </div>
                   <div className="slide-info">
                     <span className="slide-brand">{s.marca}</span>
-                    <a href={`/producto/${s.id}`} className="slide-name">{s.nombre}</a>
+                    <a href={`/producto/${toSlug(s.nombre)}-${s.id}`} className="slide-name">{s.nombre}</a>
                     <div className="slide-price-row">
                       <span className="slide-price">₡{s.precio?.toLocaleString('es-CR')}</span>
                       {s.precio_original && <span className="slide-price-old">₡{s.precio_original?.toLocaleString('es-CR')}</span>}

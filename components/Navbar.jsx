@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <>
       <div className="announce">
-        ✦ 3% de descuento y envío gratis con pagos anticipados <span>·</span>
+        ✦ Envío gratis en todos los pedidos <span>·</span>
         Garantía oficial en todos los productos <span>·</span>
         <a href="https://wa.me/50663409795" target="_blank" rel="noreferrer">Contactar por WhatsApp →</a>
       </div>

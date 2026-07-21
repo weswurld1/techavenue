@@ -84,7 +84,7 @@ export default function HomePage() {
               { n:'01', t:'Stock real y actualizado',  d:'Nuestro inventario se sincroniza en tiempo real. Lo que ves disponible, está disponible.' },
               { n:'02', t:'Garantía oficial',           d:'Todos los productos incluyen garantía del fabricante. Respaldamos cada compra.' },
               { n:'03', t:'Soporte por WhatsApp',       d:'¿Dudas antes de comprar? Nuestro equipo te asesora en tiempo real por WhatsApp.' },
-              { n:'04', t:'Pago seguro',                d:'Aceptamos transferencia bancaria y pago contra entrega. Tu información siempre está segura.' },
+              { n:'04', t:'Pago seguro',                d:'Pagás por transferencia bancaria antes de la entrega. Tu información siempre está segura.' },
             ].map(w => (
               <div className="why-item" key={w.n}>
                 <div className="why-num">{w.n}</div>

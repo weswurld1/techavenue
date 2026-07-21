@@ -10,14 +10,12 @@ export default function CheckoutPage() {
     nombre: '', apellido: '', provincia: '', canton: '',
     direccion: '', telefono: '', correo: '', notas: ''
   })
-  const [metodoPago, setMetodoPago] = useState('anticipado')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
 
   const subtotal = items.reduce((acc, p) => acc + p.precio * p.cantidad, 0)
-  const descuento = metodoPago === 'anticipado' ? Math.round(subtotal * 0.03) : 0
-  const envio = metodoPago === 'anticipado' ? 0 : 3000
-  const total = subtotal - descuento + envio
+  const envio = 0
+  const total = subtotal + envio
 
   const set = (key, val) => setForm(prev => ({ ...prev, [key]: val }))
 
@@ -54,7 +52,7 @@ export default function CheckoutPage() {
       const res = await fetch('/api/pedidos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, productos: items, total, metodoPago, descuento, envio })
+        body: JSON.stringify({ ...form, productos: items, total, envio })
       })
       const data = await res.json()
       if (data.success) {
@@ -180,12 +178,6 @@ export default function CheckoutPage() {
               <span>Subtotal</span>
               <span>₡{subtotal.toLocaleString('es-CR')}</span>
             </div>
-            {descuento > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#16a34a', fontWeight: 600, marginBottom: 8 }}>
-                <span>Descuento (3%)</span>
-                <span>-₡{descuento.toLocaleString('es-CR')}</span>
-              </div>
-            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 600, marginBottom: 14, color: envio === 0 ? '#16a34a' : 'var(--black)' }}>
               <span>Envío</span>
               <span>{envio === 0 ? 'Gratis' : '₡' + envio.toLocaleString('es-CR')}</span>
@@ -202,32 +194,9 @@ export default function CheckoutPage() {
             Método de pago
           </div>
 
-          <div className="form-row-2" style={{ marginBottom: 20 }}>
-            <button
-              onClick={() => setMetodoPago('anticipado')}
-              style={{
-                padding: '12px 10px', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
-                border: metodoPago === 'anticipado' ? '2px solid #16a34a' : '1.5px solid var(--gray-200)',
-                background: metodoPago === 'anticipado' ? '#F0FDF4' : 'var(--white)',
-                transition: 'all 0.15s',
-              }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: metodoPago === 'anticipado' ? '#16a34a' : 'var(--black)', marginBottom: 3 }}>Pago anticipado</div>
-              <div style={{ fontSize: 11, color: '#16a34a', fontWeight: 600 }}>3% descuento + envío gratis</div>
-            </button>
-
-            <button
-              onClick={() => setMetodoPago('contraentrega')}
-              style={{
-                padding: '12px 10px', borderRadius: 8, cursor: 'pointer', textAlign: 'left',
-                border: metodoPago === 'contraentrega' ? '2px solid #1E3A8A' : '1.5px solid var(--gray-200)',
-                background: metodoPago === 'contraentrega' ? '#EEF2FF' : 'var(--white)',
-                transition: 'all 0.15s',
-              }}
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: metodoPago === 'contraentrega' ? '#1E3A8A' : 'var(--black)', marginBottom: 3 }}>Contra entrega</div>
-              <div style={{ fontSize: 11, color: 'var(--gray-400)' }}>Envío ₡3,000 dentro del GAM</div>
-            </button>
+          <div style={{ padding: '12px 14px', borderRadius: 8, border: '1.5px solid var(--gray-200)', background: 'var(--gray-100)', marginBottom: 20 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Transferencia bancaria</div>
+            <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pagás antes de la entrega. Te enviamos los datos bancarios para completar la transferencia.</div>
           </div>
 
           <button onClick={handleSubmit} disabled={cargando} style={{ width: '100%', background: cargando ? 'var(--gray-400)' : 'var(--black)', color: '#fff', border: 'none', borderRadius: 6, padding: '14px', fontWeight: 600, fontSize: 15, cursor: cargando ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'background 0.15s' }}>

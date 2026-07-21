@@ -50,13 +50,13 @@ export default function CarritoPage() {
           <span>Subtotal</span>
           <span>₡{total.toLocaleString('es-CR')}</span>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--black)', fontWeight: 600, marginBottom: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#16a34a', fontWeight: 600, marginBottom: 14 }}>
           <span>Envío</span>
-          <span>₡3,000 dentro del GAM</span>
+          <span>Gratis</span>
         </div>
         <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--black)' }}>Total estimado</span>
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: 'var(--black)', letterSpacing: '-0.02em' }}>₡{(total + 3000).toLocaleString('es-CR')}</span>
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 28, color: 'var(--black)', letterSpacing: '-0.02em' }}>₡{total.toLocaleString('es-CR')}</span>
         </div>
       </div>
 

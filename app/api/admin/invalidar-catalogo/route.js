@@ -1,6 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
+// Traer el catálogo completo de Divia paginado toma ~100s; dejamos margen.
+export const maxDuration = 150
 
-const CACHE_CLAVE = 'catalogo-divia-v2'
+import { createClient } from '@supabase/supabase-js'
+import { actualizarCatalogoCache } from '@/lib/divia'
 
 function verificarToken(request) {
   const auth = request.headers.get('Authorization') || ''
@@ -14,82 +16,26 @@ function getSupabase() {
   )
 }
 
-function limpiarProductos(respuesta) {
-  const productos = respuesta?.data ?? []
-  return {
-    client: respuesta.client,
-    count: respuesta.count,
-    data: productos.map(p => ({
-      id: p.id,
-      sku: p.sku,
-      partNumber: p.partNumber,
-      nombre: p.nombre,
-      detalle: p.detalle,
-      stock: p.stock,
-      peso: p.peso,
-      imageUrls: p.imageUrls,
-      marca: p.marca,
-      subcategoria: p.subcategoria,
-      precio: p.precio,
-      precioConvertido: p.precioConvertido,
-      PrecioNacional: p.PrecioNacional,
-      precioOferta: p.precioOferta,
-      isInOffer: p.isInOffer,
-      IVA: p.IVA,
-      simboloLocal: p.simboloLocal,
-      new: p.new,
-      Total: p.Total,
-      TotalOferta: p.TotalOferta,
-    })),
-  }
-}
-
 export async function POST(request) {
   if (!verificarToken(request)) {
     return Response.json({ error: 'No autorizado' }, { status: 401 })
   }
 
   const supabase = getSupabase()
-  const ahora = new Date().toISOString()
 
   try {
-    // Fetch fresh data directly from Divia
-    const url = process.env.CATALOGO_EXTERNO_URL
-    if (!url) throw new Error('CATALOGO_EXTERNO_URL no está configurado en las variables de entorno de Vercel')
-
-    const token = process.env.CATALOGO_EXTERNO_TOKEN
-    const fullUrl = token ? `${url}?token=${token}` : url
-
-    const res = await fetch(fullUrl, { cache: 'no-store' })
-    if (!res.ok) throw new Error(`Divia respondió con error ${res.status}`)
-
-    const raw = await res.json()
-    const datos = limpiarProductos(raw)
-
-    // Store fresh data in Supabase
-    const { error } = await supabase.from('cache_catalogo_externo').upsert(
-      { clave: CACHE_CLAVE, datos, actualizado_en: ahora },
-      { onConflict: 'clave' }
-    )
-    if (error) throw new Error(`Error guardando en Supabase: ${error.message}`)
-
+    const { productos, actualizado_en } = await actualizarCatalogoCache(supabase)
     return Response.json({
       ok: true,
-      productos: datos.data?.length ?? 0,
-      actualizado_en: ahora,
-      mensaje: `Catálogo actualizado: ${datos.data?.length ?? 0} productos cargados directamente de Divia.`,
+      productos,
+      actualizado_en,
+      mensaje: `Catálogo actualizado: ${productos} productos cargados directamente de Divia.`,
     })
   } catch (err) {
-    // Fallback: at least mark the cache as expired so the next visitor triggers a fresh fetch
-    await supabase
-      .from('cache_catalogo_externo')
-      .update({ actualizado_en: new Date(0).toISOString() })
-      .eq('clave', CACHE_CLAVE)
-
     return Response.json({
       ok: false,
       error: err.message,
-      mensaje: `No se pudo conectar a Divia (${err.message}). El caché fue marcado como vencido — el próximo visitante intentará actualizarlo.`,
+      mensaje: `No se pudo conectar a Divia (${err.message}). El caché fue marcado como vencido — el próximo intento (admin o cron) lo reintentará.`,
     }, { status: 502 })
   }
 }

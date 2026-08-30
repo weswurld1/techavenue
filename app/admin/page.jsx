@@ -592,6 +592,12 @@ export default function AdminPage() {
               {invalidando ? 'Actualizando...' : 'Forzar actualización de precios'}
             </button>
 
+            {invalidando && (
+              <div style={{ marginTop: 10, fontSize: 12, color: 'var(--gray-400)' }}>
+                Puede tardar hasta 2 minutos (Divia entrega el catálogo por páginas) — no cierres esta pestaña.
+              </div>
+            )}
+
             {mensajeCache && (
               <div style={{
                 marginTop: 16, padding: '12px 16px', borderRadius: 8, fontSize: 13, fontWeight: 500,

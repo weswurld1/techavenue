@@ -25,6 +25,7 @@ const NOMBRES_CATEGORIA = {
   'computadoras':           'Computadoras',
   'hogar':                  'Hogar',
   'software':               'Software',
+  'otros':                  'Otros',
   // Subcategorías específicas
   'monitores':              'Monitores',
   'escritorios':            'Escritorios',

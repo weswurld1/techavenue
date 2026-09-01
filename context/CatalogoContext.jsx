@@ -41,13 +41,13 @@ function detectarCategoria(nombreRaw, marcaRaw) {
     return { categoria: 'componentes', subcategoria: 'ram', tipo_periferico: null }
 
   // ── Accesorios — Externo / USB (antes de almacenamiento interno) ─
-  if (tiene('disco externo', 'disco duro externo', 'ssd externo', 'hdd externo', 'disco portatil'))
+  if (tiene('disco externo', 'disco duro externo', 'ssd externo', 'hdd externo', 'disco portatil', 'hd externo', 'hd solido externo'))
     return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
   if (tiene('memoria usb', 'pendrive', 'pen drive', 'micro sd', 'microsd', ' sd card', 'memoria flash'))
     return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
 
   // ── Componentes — Almacenamiento interno ─────────────────────────
-  if (tiene('disco ssd', 'ssd m.2', 'ssd 2.5', 'nvme', ' ssd ', 'disco duro interno', 'disco interno') ||
+  if (tiene('disco ssd', 'ssd m.2', 'ssd 2.5', 'nvme', ' ssd ', 'disco duro interno', 'disco interno', 'hd interno') ||
       (tiene('hdd') && !tiene('externo')))
     return { categoria: 'componentes', subcategoria: 'almacenamiento', tipo_periferico: null }
 
@@ -60,7 +60,7 @@ function detectarCategoria(nombreRaw, marcaRaw) {
     return { categoria: 'componentes', subcategoria: 'fuentes-de-poder', tipo_periferico: null }
 
   // ── Componentes — Gabinete ───────────────────────────────────────
-  if (tiene('gabinete', 'case atx', 'case matx', 'case itx', 'tower pc', 'chasis pc') ||
+  if (tiene('gabinete', 'case atx', 'case matx', 'case itx', 'tower pc', 'chasis pc', 'mini tower', 'mid tower', 'full tower') ||
       (tiene(' case ') && tiene('pc', 'gamer', 'gaming', 'atx', 'rgb')))
     return { categoria: 'componentes', subcategoria: 'gabinetes', tipo_periferico: null }
 
@@ -69,8 +69,8 @@ function detectarCategoria(nombreRaw, marcaRaw) {
     return { categoria: 'componentes', subcategoria: 'pastas-termicas', tipo_periferico: null }
 
   // ── Componentes — Refrigeración ──────────────────────────────────
-  if (tiene('liquid cooling', 'water cooling', 'enfriamiento liquido', 'aio cooler', 'disipador cpu', 'cooler cpu', 'cooler procesador') ||
-      (tiene('ventilador', 'abanico', ' fan ') && tiene('pc', 'case', 'cpu', 'gamer', '120mm', '140mm', '200mm')))
+  if (tiene('liquid cooling', 'water cooling', 'enfriamiento liquido', 'enfriamiento de aire', 'aio cooler', 'disipador cpu', 'cooler cpu', 'cooler procesador') ||
+      (tiene('ventilador', 'abanico', ' fan ') && tiene('pc', 'case', 'cpu', 'gamer', '120mm', '140mm', '200mm', 'argb', 'rgb', 'pwm')))
     return { categoria: 'componentes', subcategoria: 'refrigeracion', tipo_periferico: null }
 
   // ── Periféricos — Monitor ────────────────────────────────────────
@@ -150,15 +150,16 @@ function detectarCategoria(nombreRaw, marcaRaw) {
     return { categoria: 'hogar', subcategoria: null, tipo_periferico: null }
 
   // ── Accesorios ───────────────────────────────────────────────────
-  if (tiene('cable ', 'adaptador', 'convertidor', 'hub usb', 'hub tipo', 'docking', 'dock station') ||
+  if (tiene('cable ', 'adaptador', 'convertidor', ' hub ', 'docking', 'dock station') ||
       tiene('soporte ', 'brazo ') ||
       tiene('mochila', 'maletin', 'maletín', 'funda laptop', 'bolso laptop') ||
       tiene('cargador', 'carga rapida') ||
       tiene('limpiador pantalla', 'spray limpia'))
     return { categoria: 'accesorios', subcategoria: null, tipo_periferico: null }
 
-  // Sin categoría reconocida — no mostrar en tienda
-  return null
+  // Sin categoría reconocida — se muestra igual bajo "Otros" en vez de ocultarse
+  // (así el buscador y el link directo al producto siempre funcionan)
+  return { categoria: 'otros', subcategoria: null, tipo_periferico: null }
 }
 
 function mapearProducto(p) {

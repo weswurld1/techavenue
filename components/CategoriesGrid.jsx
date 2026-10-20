@@ -19,6 +19,7 @@ export default function CategoriesGrid() {
             <CategoryModel url={cat.model} rotation={cat.rotation} />
           </div>
           <div className="category-body">
+            {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- intentional "// label" design accent, not a leftover comment */}
             <span className="category-name"><em>//</em> {cat.label}</span>
             <span className="category-arrow">→</span>
           </div>

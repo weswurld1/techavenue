@@ -283,6 +283,7 @@ export default function CategoryClient({ params }) {
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '48px clamp(12px, 4vw, 32px) 96px' }}>
 
       <div style={{ marginBottom: 36 }}>
+        {/* eslint-disable-next-line react/jsx-no-comment-textnodes -- intentional "// label" design accent, not a leftover comment */}
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1E3A8A', marginBottom: 8 }}>
           // {nombreCategoria}
         </div>

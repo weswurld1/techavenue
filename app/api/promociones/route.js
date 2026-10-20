@@ -13,12 +13,7 @@ export async function GET() {
     .select('*')
     .order('orden', { ascending: true })
 
-  if (!lista?.length) return Response.json({ productos: [], lista: [] })
-
-  const skus = lista.map(d => d.sku)
-  const { data: productos } = await supabase.from('productos').select('*').in('sku', skus)
-  const ordenados = skus.map(sku => productos?.find(p => p.sku === sku)).filter(Boolean)
-  return Response.json({ productos: ordenados, lista })
+  return Response.json({ lista: lista || [] })
 }
 
 export async function POST(request) {

@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo, Fragment } from 'react'
 
 const ESTADOS = [
+  { value: 'pendiente_pago',  label: 'Pendiente de pago' },
   { value: 'recibido',        label: 'Recibido' },
   { value: 'pago_verificado', label: 'Pago verificado' },
   { value: 'preparando',      label: 'Preparando' },
@@ -12,17 +13,25 @@ const ESTADOS = [
 const FILTROS = [
   { key: 'todos',         label: 'Todos' },
   { key: 'anticipado',    label: 'Anticipado' },
+  { key: 'onvo',          label: 'Tarjeta (ONVO)' },
   { key: 'contraentrega', label: 'Contraentrega' },
   { key: 'garantia',      label: 'Garantía' },
   { key: 'archivados',    label: 'Archivados' },
 ]
 
 const BADGE_ESTADO = {
+  pendiente_pago:  { bg: '#F3F4F6', color: '#6B7280' },
   recibido:        { bg: '#FFF8E1', color: '#B45309' },
   pago_verificado: { bg: '#EEF2FF', color: '#1E3A8A' },
   preparando:      { bg: '#F5F3FF', color: '#7C3AED' },
   en_camino:       { bg: '#E0F2FE', color: '#0284C7' },
   entregado:       { bg: '#F0FDF4', color: '#16A34A' },
+}
+
+const METODO_PAGO = {
+  anticipado:    { label: 'Anticipado',      bg: '#F0FDF4', color: '#16A34A' },
+  onvo:          { label: 'Tarjeta (ONVO)',  bg: '#EEF2FF', color: '#1E3A8A' },
+  contraentrega: { label: 'Contraentrega',   bg: '#E0F2FE', color: '#0284C7' },
 }
 
 export default function AdminPage() {
@@ -214,6 +223,7 @@ export default function AdminPage() {
       if (p.archivado)                return false
       if (filtro === 'todos')         return true
       if (filtro === 'anticipado')    return p.metodo_pago === 'anticipado'
+      if (filtro === 'onvo')          return p.metodo_pago === 'onvo'
       if (filtro === 'contraentrega') return p.metodo_pago === 'contraentrega'
       if (filtro === 'garantia')      return p.en_garantia
       return true
@@ -233,6 +243,7 @@ export default function AdminPage() {
   const conteos = {
     todos:         pedidos.filter(p => !p.archivado).length,
     anticipado:    pedidos.filter(p => !p.archivado && p.metodo_pago === 'anticipado').length,
+    onvo:          pedidos.filter(p => !p.archivado && p.metodo_pago === 'onvo').length,
     contraentrega: pedidos.filter(p => !p.archivado && p.metodo_pago === 'contraentrega').length,
     garantia:      pedidos.filter(p => p.en_garantia).length,
     archivados:    pedidos.filter(p => p.archivado).length,
@@ -349,7 +360,7 @@ export default function AdminPage() {
               {[
                 { label: 'Pedidos activos',  value: conteos.todos,         color: '#1E3A8A', bg: '#EEF2FF', border: '#C7D2FE' },
                 { label: 'Pago anticipado',  value: conteos.anticipado,    color: '#16A34A', bg: '#F0FDF4', border: '#BBF7D0' },
-                { label: 'Contra entrega',   value: conteos.contraentrega, color: '#0284C7', bg: '#E0F2FE', border: '#BAE6FD' },
+                { label: 'Tarjeta (ONVO)',   value: conteos.onvo,          color: '#1E3A8A', bg: '#EEF2FF', border: '#C7D2FE' },
                 { label: 'En garantía',      value: conteos.garantia,      color: '#B45309', bg: '#FFF8E1', border: '#FDE68A' },
                 { label: 'Ingresos totales', value: `₡${totalIngresos.toLocaleString('es-CR')}`, color: '#16A34A', bg: '#F0FDF4', border: '#BBF7D0', mono: true },
               ].map(stat => (
@@ -412,6 +423,7 @@ export default function AdminPage() {
                     <tbody>
                       {pedidosFiltrados.map(p => {
                         const badge   = BADGE_ESTADO[p.estado] || { bg: '#F3F4F6', color: '#6B7280' }
+                        const pago    = METODO_PAGO[p.metodo_pago] || { label: p.metodo_pago, bg: '#F3F4F6', color: '#6B7280' }
                         const isOpen  = expandido === p.id
                         const prods   = Array.isArray(p.productos) ? p.productos : (typeof p.productos === 'string' ? JSON.parse(p.productos) : [])
                         return (
@@ -427,8 +439,8 @@ export default function AdminPage() {
                               <td style={{ padding: '14px', fontWeight: 600, whiteSpace: 'nowrap' }}>{p.nombre} {p.apellido}</td>
                               <td style={{ padding: '14px', color: 'var(--gray-600)', fontSize: 12 }}>{p.correo}</td>
                               <td style={{ padding: '14px' }}>
-                                <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 20, background: p.metodo_pago === 'anticipado' ? '#F0FDF4' : '#EEF2FF', color: p.metodo_pago === 'anticipado' ? '#16A34A' : '#1E3A8A' }}>
-                                  {p.metodo_pago === 'anticipado' ? 'Anticipado' : 'Contraentrega'}
+                                <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 20, background: pago.bg, color: pago.color }}>
+                                  {pago.label}
                                 </span>
                               </td>
                               <td style={{ padding: '14px', fontWeight: 700, whiteSpace: 'nowrap' }}>₡{p.total?.toLocaleString('es-CR')}</td>

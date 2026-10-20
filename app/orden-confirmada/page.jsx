@@ -1,13 +1,97 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+
+function ConfirmacionTarjeta({ orden }) {
+  const [pedido, setPedido] = useState(null)
+  const [cargando, setCargando] = useState(true)
+
+  useEffect(() => {
+    let cancelado = false
+    let intentos = 0
+    const MAX_INTENTOS = 10
+
+    const buscar = async () => {
+      try {
+        const res = await fetch('/api/estado-pedido?orden=' + encodeURIComponent(orden))
+        const data = await res.json()
+        if (cancelado) return
+        setPedido(data.pedido || null)
+        setCargando(false)
+        intentos += 1
+        // El webhook de ONVO puede tardar unos segundos; reintenta mientras siga pendiente.
+        if ((!data.pedido || data.pedido.estado === 'pendiente_pago') && intentos < MAX_INTENTOS) {
+          setTimeout(buscar, 2000)
+        }
+      } catch {
+        if (!cancelado) setCargando(false)
+      }
+    }
+    buscar()
+    return () => { cancelado = true }
+  }, [orden])
+
+  const confirmando = cargando || !pedido || pedido.estado === 'pendiente_pago'
+
+  return (
+    <div style={{ maxWidth: 520, margin: '0 auto', padding: '72px 32px 96px', textAlign: 'center' }}>
+      <div style={{ width: 64, height: 64, background: confirmando ? '#FFFBEB' : '#F0FDF4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+        {confirmando ? (
+          <div style={{ width: 24, height: 24, border: '3px solid #FDE68A', borderTopColor: '#D97706', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+        ) : (
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        )}
+      </div>
+      <style>{'@keyframes spin { to { transform: rotate(360deg) } }'}</style>
+
+      <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(32px, 5vw, 48px)', color: 'var(--black)', letterSpacing: '-0.02em', marginBottom: 10 }}>
+        {confirmando ? 'Confirmando tu pago...' : 'Pago confirmado!'}
+      </h1>
+      <p style={{ color: 'var(--gray-600)', fontSize: 15, marginBottom: 28, lineHeight: 1.6 }}>
+        {confirmando
+          ? 'Tu pago está siendo procesado. Esto toma solo unos segundos — te llegará un correo de confirmación.'
+          : `Gracias por tu compra, ${pedido.nombre}. Te enviamos la confirmación por correo.`}
+      </p>
+
+      <div style={{ background: '#EEF2FF', borderRadius: 8, padding: '16px 24px', marginBottom: 24, display: 'inline-block' }}>
+        <div style={{ fontSize: 11, color: '#3730A3', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Numero de orden</div>
+        <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 24, color: '#1E3A8A', letterSpacing: '-0.01em' }}>{orden}</div>
+      </div>
+
+      {!confirmando && (
+        <div style={{ background: 'var(--gray-100)', borderRadius: 8, padding: '16px 24px', marginBottom: 24, textAlign: 'left' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontSize: 13, color: 'var(--gray-600)' }}>Total pagado</span>
+            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 24, color: 'var(--black)' }}>₡{pedido.total?.toLocaleString('es-CR')}</span>
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <a href={`https://wa.me/50663409795?text=${encodeURIComponent('Hola, tengo una consulta sobre mi pedido ' + orden)}`} target="_blank" rel="noreferrer" style={{ background: '#25D366', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>Contactar por WhatsApp</a>
+        <Link href="/" style={{ background: 'var(--black)', color: '#fff', padding: '12px 20px', borderRadius: 6, textDecoration: 'none', fontWeight: 600, fontSize: 13 }}>Seguir comprando</Link>
+      </div>
+    </div>
+  )
+}
 
 function ConfirmacionContent() {
   const params = useSearchParams()
   const orden = params.get('orden') || 'TA-000000'
-  const total = Number(params.get('total')) || 0
-  const nombre = params.get('nombre') || 'Cliente'
+  const totalParam = params.get('total')
+  const nombreParam = params.get('nombre')
+
+  // El redirect de ONVO solo trae "orden" (no confiamos en total/nombre por URL para un pago
+  // con tarjeta); la transferencia bancaria sigue mandando esos params como siempre.
+  if (totalParam === null && nombreParam === null) {
+    return <ConfirmacionTarjeta orden={orden} />
+  }
+
+  const total = Number(totalParam) || 0
+  const nombre = nombreParam || 'Cliente'
 
   const mensajeWA = 'Hola! Acabo de realizar un pedido en TechAvenue. Mi numero de orden es ' + orden + ' por un total de ₡' + total.toLocaleString('es-CR') + '. Adjunto el comprobante de transferencia.'
 

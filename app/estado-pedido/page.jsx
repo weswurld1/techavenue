@@ -90,6 +90,20 @@ export default function EstadoPedidoPage() {
           </div>
         )}
 
+        {pedido && pedido.estado === 'pendiente_pago' && (
+          <div style={{ background: '#F9FAFB', border: '1px solid var(--gray-200)', borderRadius: 12, padding: '32px 28px', marginBottom: 32 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6B7280', marginBottom: 12 }}>
+              {pedido.numero_orden}
+            </div>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 'clamp(24px, 4vw, 32px)', color: 'var(--black)', letterSpacing: '-0.02em', marginBottom: 10 }}>
+              Confirmando tu pago
+            </div>
+            <div style={{ fontSize: 14, color: 'var(--gray-600)', lineHeight: 1.6 }}>
+              Tu pago con tarjeta está siendo procesado. Actualizá esta página en unos segundos — te llegará un correo de confirmación apenas se verifique.
+            </div>
+          </div>
+        )}
+
         {pedido && estado && (
           <div>
 

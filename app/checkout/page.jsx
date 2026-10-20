@@ -1,7 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCarrito } from '../../context/CartContext'
+
+const ONVO_HABILITADO = process.env.NEXT_PUBLIC_ONVO_HABILITADO === 'true'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -10,8 +12,18 @@ export default function CheckoutPage() {
     nombre: '', apellido: '', provincia: '', canton: '',
     direccion: '', telefono: '', correo: '', notas: ''
   })
+  const [metodoPago, setMetodoPago] = useState('anticipado')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState(null)
+  const [pagoCancelado, setPagoCancelado] = useState(false)
+
+  useEffect(() => {
+    // window is only available client-side, so this can't be a lazy useState initializer (would crash SSR).
+    if (new URLSearchParams(window.location.search).get('onvo_cancelado') === '1') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPagoCancelado(true)
+    }
+  }, [])
 
   const subtotal = items.reduce((acc, p) => acc + p.precio * p.cantidad, 0)
   const envio = 0
@@ -49,6 +61,21 @@ export default function CheckoutPage() {
     setCargando(true)
     setError(null)
     try {
+      if (metodoPago === 'onvo') {
+        const res = await fetch('/api/pagos/onvo/crear-sesion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...form, productos: items, total })
+        })
+        const data = await res.json()
+        if (data.success) {
+          window.location.href = data.url
+          return
+        }
+        setError(data.error || 'Hubo un error al iniciar el pago. Intentá de nuevo.')
+        return
+      }
+
       const res = await fetch('/api/pedidos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,6 +171,12 @@ export default function CheckoutPage() {
             <div><strong style={{ color: 'var(--black)' }}>Sábado o Domingo</strong> — Pedidos del fin de semana se procesan el Lunes.</div>
           </div>
 
+          {pagoCancelado && (
+            <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 6, padding: '10px 14px', fontSize: 13, color: '#92400E', marginTop: 16 }}>
+              Cancelaste el pago con tarjeta. Tu carrito sigue intacto, podés intentar de nuevo o elegir transferencia bancaria.
+            </div>
+          )}
+
           {error && (
             <div style={{ background: '#FEE2E2', border: '1px solid #FCA5A5', borderRadius: 6, padding: '10px 14px', fontSize: 13, color: '#DC2626', marginTop: 16 }}>
               {error}
@@ -194,13 +227,32 @@ export default function CheckoutPage() {
             Método de pago
           </div>
 
-          <div style={{ padding: '12px 14px', borderRadius: 8, border: '1.5px solid var(--gray-200)', background: 'var(--gray-100)', marginBottom: 20 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Transferencia bancaria</div>
-            <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pagás antes de la entrega. Te enviamos los datos bancarios para completar la transferencia.</div>
-          </div>
+          {ONVO_HABILITADO ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+              <div
+                onClick={() => setMetodoPago('anticipado')}
+                style={{ padding: '12px 14px', borderRadius: 8, border: `1.5px solid ${metodoPago === 'anticipado' ? 'var(--black)' : 'var(--gray-200)'}`, background: metodoPago === 'anticipado' ? '#fff' : 'var(--gray-100)', cursor: 'pointer' }}
+              >
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Transferencia bancaria</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pagás antes de la entrega. Te enviamos los datos bancarios para completar la transferencia.</div>
+              </div>
+              <div
+                onClick={() => setMetodoPago('onvo')}
+                style={{ padding: '12px 14px', borderRadius: 8, border: `1.5px solid ${metodoPago === 'onvo' ? 'var(--black)' : 'var(--gray-200)'}`, background: metodoPago === 'onvo' ? '#fff' : 'var(--gray-100)', cursor: 'pointer' }}
+              >
+                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Tarjeta de crédito o débito</div>
+                <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pago seguro procesado por ONVO. Te redirigimos a su página para completar el pago.</div>
+              </div>
+            </div>
+          ) : (
+            <div style={{ padding: '12px 14px', borderRadius: 8, border: '1.5px solid var(--gray-200)', background: 'var(--gray-100)', marginBottom: 20 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Transferencia bancaria</div>
+              <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pagás antes de la entrega. Te enviamos los datos bancarios para completar la transferencia.</div>
+            </div>
+          )}
 
           <button onClick={handleSubmit} disabled={cargando} style={{ width: '100%', background: cargando ? 'var(--gray-400)' : 'var(--black)', color: '#fff', border: 'none', borderRadius: 6, padding: '14px', fontWeight: 600, fontSize: 15, cursor: cargando ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-body)', transition: 'background 0.15s' }}>
-            {cargando ? 'Procesando...' : 'Confirmar pedido →'}
+            {cargando ? 'Procesando...' : metodoPago === 'onvo' ? 'Ir a pagar →' : 'Confirmar pedido →'}
           </button>
 
           <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, color: 'var(--gray-400)' }}>

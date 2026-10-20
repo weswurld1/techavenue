@@ -1,20 +1,10 @@
 export const dynamic = 'force-dynamic'
 
-import { randomBytes } from 'crypto'
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
-import { escapeHtml, esEmailValido, obtenerIp, rateLimit } from '@/lib/security'
-
-const MAX_LARGO = { nombre: 80, apellido: 80, provincia: 60, canton: 60, direccion: 200, telefono: 30, notas: 500 }
-
-function generarNumeroOrden() {
-  const fecha = new Date()
-  const año = fecha.getFullYear()
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0')
-  const dia = String(fecha.getDate()).padStart(2, '0')
-  const random = randomBytes(5).toString('hex').toUpperCase()
-  return `TA-${año}${mes}${dia}-${random}`
-}
+import { obtenerIp, rateLimit } from '@/lib/security'
+import { generarNumeroOrden, validarDatosPedido } from '@/lib/pedidos'
+import { construirEmailAdmin, construirEmailCliente } from '@/lib/emailsPedido'
 
 export async function POST(request) {
   try {
@@ -27,29 +17,12 @@ export async function POST(request) {
     const { nombre, apellido, provincia, canton, direccion, telefono, correo, notas, productos, total } = body
     const metodoPago = 'anticipado'
 
-    if (!nombre || !apellido || !correo || !telefono || !direccion || !provincia || !canton) {
-      return Response.json({ success: false, error: 'Datos del cliente incompletos' }, { status: 400 })
-    }
-    if (!esEmailValido(correo)) {
-      return Response.json({ success: false, error: 'Correo inválido' }, { status: 400 })
+    const errorValidacion = validarDatosPedido(body)
+    if (errorValidacion) {
+      return Response.json({ success: false, ...errorValidacion }, { status: 400 })
     }
     if (!rateLimit(`pedidos-correo:${correo.toLowerCase()}`, { limite: 5, ventanaMs: 60 * 60 * 1000 })) {
       return Response.json({ success: false, error: 'Ya se enviaron varios pedidos a este correo. Intenta más tarde.' }, { status: 429 })
-    }
-    for (const [campo, max] of Object.entries(MAX_LARGO)) {
-      const valor = body[campo]
-      if (valor != null && String(valor).length > max) {
-        return Response.json({ success: false, error: `Campo "${campo}" demasiado largo` }, { status: 400 })
-      }
-    }
-    if (!Array.isArray(productos) || productos.length === 0 || productos.length > 50) {
-      return Response.json({ success: false, error: 'El pedido no tiene productos' }, { status: 400 })
-    }
-    if (!productos.every(p => p && typeof p.nombre === 'string' && p.nombre.length <= 200 && typeof p.precio === 'number' && typeof p.cantidad === 'number')) {
-      return Response.json({ success: false, error: 'Productos inválidos' }, { status: 400 })
-    }
-    if (typeof total !== 'number' || total <= 0) {
-      return Response.json({ success: false, error: 'Total inválido' }, { status: 400 })
     }
 
     const numeroOrden = generarNumeroOrden()
@@ -81,128 +54,20 @@ export async function POST(request) {
       return Response.json({ success: false, error: supabaseError.message }, { status: 500 })
     }
 
-    const nombreSeguro    = escapeHtml(nombre)
-    const apellidoSeguro  = escapeHtml(apellido)
-    const provinciaSegura = escapeHtml(provincia)
-    const cantonSeguro    = escapeHtml(canton)
-    const direccionSegura = escapeHtml(direccion)
-    const telefonoSeguro  = escapeHtml(telefono)
-    const correoSeguro    = escapeHtml(correo)
-    const notasSeguras    = notas ? escapeHtml(notas) : ''
-
-    const productosHTML = productos.map(p =>
-      `<tr>
-        <td style="padding:8px;border-bottom:1px solid #eee;">${escapeHtml(p.nombre)}</td>
-        <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${escapeHtml(p.cantidad)}</td>
-        <td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">₡${p.precio.toLocaleString('es-CR')}</td>
-      </tr>`
-    ).join('')
-
-    const resumenPagoHTML = `<tr><td style="padding:6px;color:#16A34A;font-weight:600;">Envio</td><td style="padding:6px;color:#16A34A;font-weight:600;">Gratis</td></tr>`
+    const pedido = { numeroOrden, nombre, apellido, provincia, canton, direccion, telefono, correo, notas, productos, total, metodoPago }
 
     await resend.emails.send({
       from: 'TechAvenue <ventas@techavenuecr.com>',
       to: 'ventas@techavenuecr.com',
       subject: `Nuevo pedido ${numeroOrden} — ${nombre} ${apellido}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:#0d0d0d;padding:24px;text-align:center;">
-            <h1 style="color:#F9BE16;margin:0;font-size:24px;">TechAvenue</h1>
-            <p style="color:rgba(255,255,255,0.6);margin:6px 0 0;font-size:14px;">Nuevo pedido recibido</p>
-          </div>
-          <div style="padding:24px;background:#f9f9f9;">
-            <div style="background:#1E3A8A;color:#fff;padding:12px 20px;border-radius:6px;margin-bottom:20px;text-align:center;">
-              <p style="margin:0;font-size:12px;opacity:0.8;">Numero de orden</p>
-              <p style="margin:4px 0 0;font-size:22px;font-weight:700;">${numeroOrden}</p>
-            </div>
-            <div style="background:#F0FDF4;border-radius:6px;padding:10px 16px;margin-bottom:20px;text-align:center;">
-              <p style="margin:0;font-size:13px;font-weight:600;color:#16A34A;">
-                Metodo de pago: Transferencia bancaria (antes de la entrega)
-              </p>
-            </div>
-            <h2 style="font-size:16px;color:#0d0d0d;margin:0 0 12px;">Datos del cliente</h2>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-              <tr><td style="padding:6px;color:#666;width:140px;">Nombre</td><td style="padding:6px;font-weight:500;">${nombreSeguro} ${apellidoSeguro}</td></tr>
-              <tr style="background:#f0f0f0;"><td style="padding:6px;color:#666;">Provincia</td><td style="padding:6px;font-weight:500;">${provinciaSegura}</td></tr>
-              <tr><td style="padding:6px;color:#666;">Canton</td><td style="padding:6px;font-weight:500;">${cantonSeguro}</td></tr>
-              <tr style="background:#f0f0f0;"><td style="padding:6px;color:#666;">Direccion</td><td style="padding:6px;font-weight:500;">${direccionSegura}</td></tr>
-              <tr><td style="padding:6px;color:#666;">Telefono</td><td style="padding:6px;font-weight:500;">${telefonoSeguro}</td></tr>
-              <tr style="background:#f0f0f0;"><td style="padding:6px;color:#666;">Correo</td><td style="padding:6px;font-weight:500;">${correoSeguro}</td></tr>
-              ${notasSeguras ? `<tr><td style="padding:6px;color:#666;">Notas</td><td style="padding:6px;font-weight:500;">${notasSeguras}</td></tr>` : ''}
-            </table>
-            <h2 style="font-size:16px;color:#0d0d0d;margin:0 0 12px;">Productos</h2>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
-              <thead>
-                <tr style="background:#0d0d0d;color:#fff;">
-                  <th style="padding:8px;text-align:left;font-size:12px;">Producto</th>
-                  <th style="padding:8px;text-align:center;font-size:12px;">Cant.</th>
-                  <th style="padding:8px;text-align:right;font-size:12px;">Precio</th>
-                </tr>
-              </thead>
-              <tbody>${productosHTML}</tbody>
-            </table>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;">
-              ${resumenPagoHTML}
-            </table>
-            <div style="background:#0d0d0d;color:#fff;padding:14px 20px;border-radius:6px;">
-              <span style="font-size:14px;">Total del pedido</span>
-              <span style="font-size:18px;font-weight:700;color:#F9BE16;float:right;">₡${total.toLocaleString('es-CR')}</span>
-            </div>
-          </div>
-        </div>
-      `
+      html: construirEmailAdmin(pedido),
     })
 
     await resend.emails.send({
       from: 'TechAvenue <ventas@techavenuecr.com>',
       to: correo,
       subject: `Confirmacion de tu pedido ${numeroOrden} — TechAvenue`,
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
-          <div style="background:#0d0d0d;padding:24px;text-align:center;">
-            <h1 style="color:#F9BE16;margin:0;font-size:24px;">TechAvenue</h1>
-            <p style="color:rgba(255,255,255,0.6);margin:6px 0 0;font-size:14px;">Confirmacion de pedido</p>
-          </div>
-          <div style="padding:24px;">
-            <h2 style="font-size:20px;color:#0d0d0d;margin:0 0 6px;">Gracias por tu compra, ${nombreSeguro}!</h2>
-            <p style="color:#666;font-size:14px;margin:0 0 20px;">Tu pedido fue recibido. Nos pondremos en contacto pronto para coordinar la entrega.</p>
-            <div style="background:#EEF2FF;border-radius:6px;padding:14px 20px;text-align:center;margin-bottom:20px;">
-              <p style="margin:0;font-size:12px;color:#666;">Numero de orden</p>
-              <p style="margin:4px 0 0;font-size:22px;font-weight:700;color:#1E3A8A;">${numeroOrden}</p>
-            </div>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
-              <thead>
-                <tr style="background:#f5f5f5;">
-                  <th style="padding:8px;text-align:left;font-size:12px;color:#666;">Producto</th>
-                  <th style="padding:8px;text-align:center;font-size:12px;color:#666;">Cant.</th>
-                  <th style="padding:8px;text-align:right;font-size:12px;color:#666;">Precio</th>
-                </tr>
-              </thead>
-              <tbody>${productosHTML}</tbody>
-            </table>
-            <table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px;">
-              ${resumenPagoHTML}
-            </table>
-            <div style="padding:12px;background:#0d0d0d;border-radius:6px;color:#fff;margin-bottom:20px;">
-              <span style="font-size:14px;">Total</span>
-              <span style="font-size:16px;font-weight:700;color:#F9BE16;float:right;">₡${total.toLocaleString('es-CR')}</span>
-            </div>
-            <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:8px;padding:16px;margin-bottom:20px;">
-              <p style="margin:0 0 10px;font-size:13px;font-weight:600;color:#1E3A8A;">Datos para tu transferencia bancaria</p>
-              <table style="width:100%;font-size:13px;">
-                <tr><td style="color:#666;padding:3px 0;width:120px;">Banco</td><td style="font-weight:500;color:#0d0d0d;">Banco Promerica</td></tr>
-                <tr><td style="color:#666;padding:3px 0;">IBAN</td><td style="font-weight:500;color:#0d0d0d;">CR53010200009691543011</td></tr>
-                <tr><td style="color:#666;padding:3px 0;">A nombre de</td><td style="font-weight:500;color:#0d0d0d;">Juan Paulo Ulate Barcelli</td></tr>
-                <tr><td style="color:#666;padding:3px 0;">Monto exacto</td><td style="font-weight:700;color:#1E3A8A;">₡${total.toLocaleString('es-CR')}</td></tr>
-              </table>
-            </div>
-            <a href="https://wa.me/50663409795" style="display:inline-block;background:#25D366;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;">Contactar por WhatsApp</a>
-          </div>
-          <div style="background:#f5f5f5;padding:16px;text-align:center;">
-            <p style="margin:0;font-size:12px;color:#999;">2026 TechAvenue · techavenuecr.com</p>
-          </div>
-        </div>
-      `
+      html: construirEmailCliente(pedido),
     })
 
     return Response.json({ success: true, numeroOrden })

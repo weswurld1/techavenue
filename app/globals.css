@@ -5,6 +5,7 @@
   --white: #ffffff;
   --accent: #1E3A8A;
   --accent-dark: #152B6B;
+  --accent-hero: #4f7dff;
   --gray-100: #f7f7f7;
   --gray-200: #ebebeb;
   --gray-400: #b0b0b0;
@@ -14,7 +15,9 @@
   --font-body: 'Barlow', sans-serif;
 }
 
-html, body { overflow-x: hidden; max-width: 100%; }
+/* `clip` (not `hidden`) prevents sideways scroll WITHOUT turning the page into
+   a scroll container — `hidden` here breaks `position: sticky` on the navbar. */
+html, body { overflow-x: clip; max-width: 100%; }
 html { scroll-behavior: smooth; }
 
 body {
@@ -49,6 +52,16 @@ button { cursor: pointer; font-family: var(--font-body); border: none; backgroun
 }
 .announce a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 .announce span { color: var(--gray-400); margin: 0 10px; }
+
+/* Over the full-screen hero (homepage): the shipping bar goes transparent and
+   floats on the video so the top reads as one seamless cinematic panel. */
+.announce.announce-over-hero {
+  position: relative;
+  z-index: 101;
+  background: transparent;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.65);
+}
+.announce.announce-over-hero span { color: rgba(255, 255, 255, 0.5); }
 
 /* ── NAVBAR ── */
 nav {
@@ -561,6 +574,206 @@ nav {
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   CINEMATIC HERO  (dark, full-bleed, pacificocr-style reveal)
+   ══════════════════════════════════════════════════════════════ */
+.hero-cine {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* Pull the hero up under BOTH the announce bar AND the navbar so the video
+     runs full-bleed to the very top and the transparent bars sit on top of it
+     (pacificocr-style). 103px = announce (38) + nav (65). */
+  margin-top: -103px;
+}
+.hero-cine-inner {
+  position: relative;
+  width: 100%;
+  /* Fill the entire viewport. */
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #04050a;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  /* Media fades up on load so it never pops in. */
+  animation: hc-panel-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Background media (video) ── */
+.hero-cine-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-cine-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* No transforms at all (no zoom, no parallax) so the browser can play the
+     video on its efficient hardware path instead of recompositing it each
+     frame — maximum smoothness. */
+}
+
+/* ── Overlays: left-weighted darkening for text contrast ── */
+.hero-cine-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* One flat, even tint across the whole hero — no gradient anywhere, so there
+     is no visible fade at the top, bottom or edges. Text stays readable via its
+     own shadow. */
+  background: rgba(2, 3, 7, 0.38);
+}
+/* No fades, no vignette, no fade-to-white — the video meets the Categorías
+   section with a clean edge. */
+.hero-cine-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Content ── (centred horizontally + vertically) */
+.hero-cine-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.hero-cine-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(56px, 8.5vw, 128px);
+  line-height: 0.9;
+  letter-spacing: -0.015em;
+  color: #fff;
+  margin-bottom: 26px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 4px 30px rgba(0, 0, 0, 0.55), 0 1px 10px rgba(0, 0, 0, 0.5);
+}
+.hero-cine-title em {
+  font-style: normal;
+  color: var(--accent-hero);
+}
+
+/* Line reveal — a clean fade-up (NO overflow mask, so nothing clips the letters
+   or casts a hard-edged halo/fade around "ideal."). */
+.hc-line {
+  display: block;
+}
+.hc-line-in {
+  display: block;
+  opacity: 0;
+  transform: translateY(26px);
+  animation: hc-line-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hc-line:nth-child(1) .hc-line-in { animation-delay: 0.30s; }
+.hc-line:nth-child(2) .hc-line-in { animation-delay: 0.42s; }
+.hc-line:nth-child(3) .hc-line-in { animation-delay: 0.54s; }
+
+.hero-cine-sub {
+  font-size: clamp(15px, 1.4vw, 18px);
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 440px;
+  margin-bottom: 34px;
+  opacity: 0;
+  animation: hc-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both;
+}
+/* Mouse scroll-down indicator */
+.hero-cine-scroll {
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  animation: hc-fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.95s both;
+}
+.hero-cine-mouse {
+  width: 28px;
+  height: 46px;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+}
+.hero-cine-wheel {
+  width: 4px;
+  height: 8px;
+  border-radius: 2px;
+  background: #fff;
+  animation: hc-wheel 1.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+@keyframes hc-wheel {
+  0%   { opacity: 0; transform: translateY(0); }
+  28%  { opacity: 1; }
+  70%  { opacity: 1; transform: translateY(13px); }
+  100% { opacity: 0; transform: translateY(13px); }
+}
+
+@keyframes hc-panel-in {
+  from { opacity: 0; transform: translateY(14px) scale(0.995); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes hc-kenburns {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.06); }
+}
+@keyframes hc-line-up {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes hc-fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes hc-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(79, 125, 255, 0.55); }
+  70%  { box-shadow: 0 0 0 12px rgba(79, 125, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 125, 255, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cine-inner,
+  .hero-cine-video,
+  .hc-line-in,
+  .hero-cine-sub,
+  .hero-cine-scroll,
+  .hero-cine-wheel { animation: none; }
+  .hc-line-in { transform: none; }
+  .hero-cine-sub,
+  .hero-cine-scroll { opacity: 1; }
+}
+
+/* ── TRANSPARENT NAV OVER HERO (homepage, top of scroll) ── */
+nav { transition: background-color 0.3s ease, border-color 0.3s ease; }
+nav.nav-transparent {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+nav.nav-transparent .nav-links a { color: rgba(255, 255, 255, 0.92); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5); }
+nav.nav-transparent .nav-links a:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+nav.nav-transparent .nav-search-bar {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+nav.nav-transparent .nav-search-bar svg { color: rgba(255, 255, 255, 0.75) !important; }
+nav.nav-transparent .nav-search-placeholder { color: rgba(255, 255, 255, 0.78); }
+nav.nav-transparent .nav-catalog-btn,
+nav.nav-transparent .nav-hamburger,
+nav.nav-transparent .nav-icon-btn { color: #fff; }
+nav.nav-transparent .nav-catalog-btn:hover,
+nav.nav-transparent .nav-icon-btn:hover { background: rgba(255, 255, 255, 0.14); }
 
 /* ── BACK LINK ── */
 .page-back {
@@ -1081,8 +1294,6 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   gap: 16px;
 }
 .footer-copy { font-size: 12.5px; color: var(--gray-400); }
-.footer-made-by { font-size: 12.5px; color: var(--gray-400); transition: color 0.15s; }
-.footer-made-by:hover { color: var(--black); }
 .footer-legal { display: flex; gap: 20px; }
 .footer-legal a { font-size: 12.5px; color: var(--gray-400); transition: color 0.15s; }
 .footer-legal a:hover { color: var(--black); }
@@ -1298,6 +1509,11 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   .hero-left { padding: 48px 0 40px; }
   .hero-right { padding: 0 0 40px; }
 
+  /* Cinematic hero */
+  .hero-cine { padding: 0; margin-top: -97px; } /* announce (32) + nav (65) */
+  .hero-cine-inner { min-height: 100dvh; }
+  .hero-cine-content { padding: 0 22px; }
+
   /* Categories */
   .categories-section { padding: 48px 20px; }
   .categories-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1360,6 +1576,11 @@ footer { border-top: 1px solid var(--gray-200); margin-top: 80px; }
   /* Hero */
   .hero { padding: 0 16px; }
   .hero-left { padding: 36px 0 32px; }
+
+  /* Cinematic hero */
+  .hero-cine-content { padding: 44px 22px; }
+  .hero-cine-title { font-size: clamp(50px, 15vw, 76px); }
+  .hero-cine-sub { font-size: 14.5px; }
 
   /* Categories */
   .categories-section { padding: 36px 16px; }

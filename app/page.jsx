@@ -1,28 +1,12 @@
 import Slideshow from '@/components/Slideshow'
 import CategoriesGrid from '@/components/CategoriesGrid'
-import HeroVideo from '@/components/HeroVideo'
+import HeroCinematic from '@/components/HeroCinematic'
 import Link from 'next/link'
 
 export default function HomePage() {
   return (
     <>
-      <div className="hero">
-        <div className="hero-left">
-          <h1 className="hero-title">
-            Construye<br />
-            tu setup<br />
-            <em>ideal.</em>
-          </h1>
-          <p className="hero-sub">
-            Componentes, periféricos y todo lo que necesitas para armar el PC de tus sueños. Stock real, precios directos.
-          </p>
-        </div>
-        <div className="hero-right">
-          <div style={{ width: '100%', maxWidth: 600, aspectRatio: '4/3', borderRadius: 8, overflow: 'hidden', background: '#0d0d0d' }}>
-            <HeroVideo />
-          </div>
-        </div>
-      </div>
+      <HeroCinematic />
 
       <section className="categories-section">
         <div className="section-header">
@@ -163,9 +147,6 @@ export default function HomePage() {
         </div>
         <div className="footer-bottom">
           <span className="footer-copy">© 2026 TechAvenue. Todos los derechos reservados.</span>
-          <a href="https://byteclubdev.com/" target="_blank" rel="noreferrer" className="footer-made-by">
-            Made by byteclubdev.com
-          </a>
           <div className="footer-legal">
             <Link href="/politica-privacidad">Privacidad</Link>
             <Link href="/terminos-servicio">Términos</Link>

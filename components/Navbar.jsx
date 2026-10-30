@@ -1,5 +1,6 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { useCarrito } from '../context/CartContext'
@@ -16,20 +17,47 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [searchOpen,  setSearchOpen]  = useState(false)
+  const [overHero,    setOverHero]    = useState(true)
   const { cantidad } = useCarrito()
+  const pathname = usePathname()
+
+  // Transparent while the navbar is still over the full-screen hero video;
+  // turns solid white only once the (white) Categorías section slides up under
+  // it — i.e. the moment the hero's bottom edge reaches the navbar.
+  const transparent = pathname === '/' && overHero
+  useEffect(() => {
+    if (pathname !== '/') { setOverHero(false); return }
+    const update = () => {
+      const hero = document.querySelector('.hero-cine')
+      if (!hero) { setOverHero(false); return }
+      const navH = document.querySelector('nav')?.offsetHeight || 64
+      setOverHero(hero.getBoundingClientRect().bottom > navH)
+    }
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [pathname])
 
   return (
     <>
-      <div className="announce">
+      <div className={pathname === '/' ? 'announce announce-over-hero' : 'announce'}>
         ✦ Envío gratis en todos los pedidos <span>·</span>
         Garantía oficial en todos los productos <span>·</span>
         <a href="https://wa.me/50663409795" target="_blank" rel="noreferrer">Contactar por WhatsApp →</a>
       </div>
 
-      <nav>
+      <nav className={transparent ? 'nav-transparent' : undefined}>
         <div className="nav-inner">
           <Link href="/" className="logo" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            <img src="/TITULO.AMARILLO.NEGRO.png" alt="TechAvenue" style={{ height: 52 }} />
+            <img
+              src={transparent ? '/logo-light.png' : '/logo-dark.png'}
+              alt="TechAvenue"
+              style={{ height: 52 }}
+            />
           </Link>
 
           <div className="nav-links">

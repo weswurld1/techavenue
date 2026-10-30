@@ -5,6 +5,31 @@ import { useCarrito } from '../../context/CartContext'
 
 const ONVO_HABILITADO = process.env.NEXT_PUBLIC_ONVO_HABILITADO === 'true'
 
+// Marcas de tarjeta que acepta ONVO (iconos inline, sin dependencias ni imágenes externas).
+function CardBrands() {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }} aria-label="Tarjetas aceptadas: Visa, Mastercard, American Express">
+      {/* Visa */}
+      <svg width="32" height="20" viewBox="0 0 32 20" role="img" aria-label="Visa">
+        <rect x="0.5" y="0.5" width="31" height="19" rx="3" fill="#fff" stroke="#E6E8EC" />
+        <text x="16" y="13.5" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontStyle="italic" fontSize="8.5" letterSpacing="0.5" fill="#1A1F71">VISA</text>
+      </svg>
+      {/* Mastercard */}
+      <svg width="32" height="20" viewBox="0 0 32 20" role="img" aria-label="Mastercard">
+        <rect x="0.5" y="0.5" width="31" height="19" rx="3" fill="#fff" stroke="#E6E8EC" />
+        <circle cx="13" cy="10" r="5.3" fill="#EB001B" />
+        <circle cx="19" cy="10" r="5.3" fill="#F79E1B" />
+        <path d="M16 5.63a5.3 5.3 0 0 0 0 8.74 5.3 5.3 0 0 0 0-8.74z" fill="#FF5F00" />
+      </svg>
+      {/* American Express */}
+      <svg width="32" height="20" viewBox="0 0 32 20" role="img" aria-label="American Express">
+        <rect x="0.5" y="0.5" width="31" height="19" rx="3" fill="#1F72CF" stroke="#1A66BC" />
+        <text x="16" y="13" textAnchor="middle" fontFamily="Arial, Helvetica, sans-serif" fontWeight="700" fontSize="6.5" letterSpacing="0.3" fill="#fff">AMEX</text>
+      </svg>
+    </div>
+  )
+}
+
 export default function CheckoutPage() {
   const router = useRouter()
   const { items, vaciar } = useCarrito()
@@ -240,7 +265,10 @@ export default function CheckoutPage() {
                 onClick={() => setMetodoPago('onvo')}
                 style={{ padding: '12px 14px', borderRadius: 8, border: `1.5px solid ${metodoPago === 'onvo' ? 'var(--black)' : 'var(--gray-200)'}`, background: metodoPago === 'onvo' ? '#fff' : 'var(--gray-100)', cursor: 'pointer' }}
               >
-                <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)', marginBottom: 3 }}>Tarjeta de crédito o débito</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 3 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--black)' }}>Tarjeta de crédito o débito</div>
+                  <CardBrands />
+                </div>
                 <div style={{ fontSize: 11, color: 'var(--gray-600)' }}>Pago seguro procesado por ONVO. Te redirigimos a su página para completar el pago.</div>
               </div>
             </div>

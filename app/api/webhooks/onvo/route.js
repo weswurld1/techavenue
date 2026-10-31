@@ -57,6 +57,11 @@ export async function POST(request) {
       return Response.json({ error: 'Error al actualizar el pedido' }, { status: 500 })
     }
 
+    if (!process.env.RESEND_API_KEY) {
+      console.error('ONVO WEBHOOK: RESEND_API_KEY no está configurada — pedido', pedido.numero_orden, 'quedó pago_verificado pero no se enviaron correos')
+      return Response.json({ recibido: true })
+    }
+
     const resend = new Resend(process.env.RESEND_API_KEY)
     const productos = Array.isArray(pedido.productos) ? pedido.productos : JSON.parse(pedido.productos)
     const pedidoEmail = {
@@ -74,19 +79,25 @@ export async function POST(request) {
       metodoPago: 'onvo',
     }
 
-    await resend.emails.send({
+    const { error: errorAdmin } = await resend.emails.send({
       from: 'TechAvenue <ventas@techavenuecr.com>',
       to: 'ventas@techavenuecr.com',
       subject: `Nuevo pedido ${pedido.numero_orden} — ${pedido.nombre} ${pedido.apellido}`,
       html: construirEmailAdmin(pedidoEmail),
     })
+    if (errorAdmin) console.error('ONVO WEBHOOK: Resend falló (admin) para', pedido.numero_orden, errorAdmin)
 
-    await resend.emails.send({
+    const { error: errorCliente } = await resend.emails.send({
       from: 'TechAvenue <ventas@techavenuecr.com>',
       to: pedido.correo,
       subject: `Confirmacion de tu pedido ${pedido.numero_orden} — TechAvenue`,
       html: construirEmailCliente(pedidoEmail),
     })
+    if (errorCliente) console.error('ONVO WEBHOOK: Resend falló (cliente) para', pedido.numero_orden, '->', pedido.correo, errorCliente)
+
+    if (!errorAdmin && !errorCliente) {
+      console.log('ONVO WEBHOOK: correos enviados OK para', pedido.numero_orden)
+    }
 
     return Response.json({ recibido: true })
   } catch (error) {

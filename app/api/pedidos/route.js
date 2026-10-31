@@ -56,19 +56,25 @@ export async function POST(request) {
 
     const pedido = { numeroOrden, nombre, apellido, provincia, canton, direccion, telefono, correo, notas, productos, total, metodoPago }
 
-    await resend.emails.send({
-      from: 'TechAvenue <ventas@techavenuecr.com>',
-      to: 'ventas@techavenuecr.com',
-      subject: `Nuevo pedido ${numeroOrden} — ${nombre} ${apellido}`,
-      html: construirEmailAdmin(pedido),
-    })
+    if (!process.env.RESEND_API_KEY) {
+      console.error('PEDIDOS: RESEND_API_KEY no está configurada — pedido', numeroOrden, 'se guardó pero no se enviaron correos')
+    } else {
+      const { error: errorAdmin } = await resend.emails.send({
+        from: 'TechAvenue <ventas@techavenuecr.com>',
+        to: 'ventas@techavenuecr.com',
+        subject: `Nuevo pedido ${numeroOrden} — ${nombre} ${apellido}`,
+        html: construirEmailAdmin(pedido),
+      })
+      if (errorAdmin) console.error('PEDIDOS: Resend falló (admin) para', numeroOrden, errorAdmin)
 
-    await resend.emails.send({
-      from: 'TechAvenue <ventas@techavenuecr.com>',
-      to: correo,
-      subject: `Confirmacion de tu pedido ${numeroOrden} — TechAvenue`,
-      html: construirEmailCliente(pedido),
-    })
+      const { error: errorCliente } = await resend.emails.send({
+        from: 'TechAvenue <ventas@techavenuecr.com>',
+        to: correo,
+        subject: `Confirmacion de tu pedido ${numeroOrden} — TechAvenue`,
+        html: construirEmailCliente(pedido),
+      })
+      if (errorCliente) console.error('PEDIDOS: Resend falló (cliente) para', numeroOrden, '->', correo, errorCliente)
+    }
 
     return Response.json({ success: true, numeroOrden })
   } catch (error) {
